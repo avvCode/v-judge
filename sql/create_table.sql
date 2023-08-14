@@ -52,6 +52,7 @@ create table if not exists question_submit
     status     int      default 0                 not null comment '判题状态',
     questionId bigint                             not null comment '题目id',
     userId     bigint                             not null comment '创建用 id',
+    code       text                               not null comment '用户代码',
     createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete   tinyint  default 0                 not null comment '是否删除',
