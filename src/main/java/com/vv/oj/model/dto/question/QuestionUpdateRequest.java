@@ -51,6 +51,10 @@ public class QuestionUpdateRequest implements Serializable {
      */
     private JudgeConfig judgeConfig;
 
+    /**
+     * 题目难度 0-简单 1-中等 2-困难
+     */
+    private Integer rate;
 
     private static final long serialVersionUID = 1L;
 }

@@ -90,6 +90,11 @@ public class Question implements Serializable {
     @TableLogic
     private Integer isDelete;
 
+    /**
+     * 题目难度 0-简单 1-中等 2-困难
+     */
+    private Integer rate;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

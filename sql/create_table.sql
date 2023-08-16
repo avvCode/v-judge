@@ -35,6 +35,7 @@ create table if not exists question
     acceptedNum int      default 0                 not null comment '题目通过数',
     judgeCase   text                               null comment '判题用例（json数组）',
     judgeConfig text                               null comment '判题配置（json对象）',
+    rate        tinyint                            not null comment '题目难度 0-简单 1-中等 2-困难',
     thumbNum    int      default 0                 not null comment '点赞数',
     favourNum   int      default 0                 not null comment '收藏数',
     userId      bigint                             not null comment '创建用户 id',

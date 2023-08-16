@@ -40,9 +40,9 @@ public class QuestionQueryRequest extends PageRequest implements Serializable {
     private List<String> tags;
 
     /**
-     * 题目答案
+     * 题目难度 0-简单 1-中等 2-困难
      */
-    private String answer;
+    private Integer rate;
 
     /**
      * 创建用户 id

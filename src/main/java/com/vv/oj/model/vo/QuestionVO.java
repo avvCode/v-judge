@@ -80,6 +80,11 @@ public class QuestionVO {
     private UserVO userVO;
 
     /**
+     * 题目难度 0-简单 1-中等 2-困难
+     */
+    private Integer rate;
+
+    /**
      * 包装类转对象
      *
      * @param questionVO

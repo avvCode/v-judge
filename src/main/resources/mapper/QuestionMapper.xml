@@ -20,6 +20,7 @@
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+            <result property="rate" column="rate" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -27,6 +28,7 @@
         tags,answer,submitNum,
         acceptedNum,judgeCase,judgeConfig,
         thumbNum,favourNum,userId,
-        createTime,updateTime,isDelete
+        createTime,updateTime,isDelete,
+        rate
     </sql>
 </mapper>
