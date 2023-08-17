@@ -14,6 +14,8 @@ import com.vv.oj.model.entity.User;
 import com.vv.oj.model.enums.QuestionSubmitLanguageEnum;
 import com.vv.oj.model.enums.QuestionSubmitStatusEnum;
 import com.vv.oj.model.vo.QuestionSubmitVO;
+import com.vv.oj.model.vo.QuestionVO;
+import com.vv.oj.model.vo.UserVO;
 import com.vv.oj.service.QuestionService;
 import com.vv.oj.service.QuestionSubmitService;
 import com.vv.oj.mapper.QuestionSubmitMapper;
@@ -118,10 +120,17 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         // 脱敏：仅本人和管理员能看见自己（提交 userId 和登录用户 id 不同）提交的代码
         long userId = loginUser.getId();
         // 处理脱敏
-        if (userId != questionSubmit.getUserId() && !userService.isAdmin(loginUser)) {
+        Long createUserId = questionSubmit.getUserId();
+        if (userId != createUserId && !userService.isAdmin(loginUser)) {
             questionSubmitVO.setCode(null);
         }
-
+        //获取创建人VO
+        UserVO userVO = userService.getUserVOById(createUserId);
+        questionSubmitVO.setUserVO(userVO);
+        //获取题目VO
+        Question question = questionService.getById(questionSubmit.getQuestionId());
+        QuestionVO questionVO = QuestionVO.objToVo(question);
+        questionSubmitVO.setQuestionVO(questionVO);
         return questionSubmitVO;
     }
 

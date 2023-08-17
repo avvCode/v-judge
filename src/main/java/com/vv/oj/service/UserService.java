@@ -94,6 +94,8 @@ public interface UserService extends IService<User> {
      */
     UserVO getUserVO(User user);
 
+    UserVO getUserVOById(Long id);
+
     /**
      * 获取脱敏的用户信息
      *

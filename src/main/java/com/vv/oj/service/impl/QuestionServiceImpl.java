@@ -18,6 +18,7 @@ import com.vv.oj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -113,6 +114,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
                 sortField);
         return queryWrapper;
     }
+
+
 
     @Override
     public QuestionVO getQuestionVO(Question question, HttpServletRequest request) {
