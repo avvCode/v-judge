@@ -3,61 +3,57 @@ package com.vv.oj.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
 /**
- * 用户
- *
- * @author vv
+ * 赛事表
+ * @TableName contest
  */
-@TableName(value = "user")
+@TableName(value ="contest")
 @Data
-public class User implements Serializable {
-
+public class Contest implements Serializable {
     /**
      * id
      */
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * 用户账号
+     * 赛事名称
      */
-    private String userAccount;
+    private String title;
 
     /**
-     * 用户密码
+     * 赛事描述
      */
-    private String userPassword;
+    private String description;
 
     /**
-     * 用户昵称
+     * 开始时间
      */
-    private String userName;
+    private String startTime;
 
     /**
-     * 用户头像
+     * 结束时间
      */
-    private String userAvatar;
+    private String endTime;
+    /**
+     * 参赛人数
+     */
+    private Integer joinNum;
+    /**
+     * 创建用户 id
+     */
+    private Long userId;
+
 
     /**
-     * 用户简介
+     * 赛事状态 0-锁定 1-正在进行 2-结束
      */
-    private String userProfile;
-
-    /**
-     * 用户角色：user/admin/ban
-     */
-    private String userRole;
-
-    /**
-     * 题目通过数量
-     */
-    private Long acNum;
+    private Integer status;
 
     /**
      * 创建时间
@@ -72,7 +68,6 @@ public class User implements Serializable {
     /**
      * 是否删除
      */
-    @TableLogic
     private Integer isDelete;
 
     @TableField(exist = false)

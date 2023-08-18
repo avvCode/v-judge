@@ -3,61 +3,43 @@ package com.vv.oj.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
 /**
- * 用户
- *
- * @author vv
+ * 评论
+ * @TableName question_comment
  */
-@TableName(value = "user")
+@TableName(value ="question_comment")
 @Data
-public class User implements Serializable {
-
+public class QuestionComment implements Serializable {
     /**
      * id
      */
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * 用户账号
+     * 父评论id
      */
-    private String userAccount;
+    private Long parent_Id;
 
     /**
-     * 用户密码
+     * 内容
      */
-    private String userPassword;
+    private String content;
 
     /**
-     * 用户昵称
+     * 点赞数
      */
-    private String userName;
+    private Integer thumbNum;
 
     /**
-     * 用户头像
+     * 创建用户 id
      */
-    private String userAvatar;
-
-    /**
-     * 用户简介
-     */
-    private String userProfile;
-
-    /**
-     * 用户角色：user/admin/ban
-     */
-    private String userRole;
-
-    /**
-     * 题目通过数量
-     */
-    private Long acNum;
+    private Long userId;
 
     /**
      * 创建时间
@@ -72,7 +54,6 @@ public class User implements Serializable {
     /**
      * 是否删除
      */
-    @TableLogic
     private Integer isDelete;
 
     @TableField(exist = false)

@@ -38,6 +38,11 @@ public class UserVO implements Serializable {
     private String userRole;
 
     /**
+     * 题目通过数量
+     */
+    private Long acNum;
+
+    /**
      * 创建时间
      */
     private Date createTime;

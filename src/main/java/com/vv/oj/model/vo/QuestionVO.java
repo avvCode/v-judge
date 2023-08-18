@@ -85,6 +85,16 @@ public class QuestionVO {
     private Integer rate;
 
     /**
+     * 是否已点赞
+     */
+    private Boolean hasThumb;
+
+    /**
+     * 是否已收藏
+     */
+    private Boolean hasFavour;
+
+    /**
      * 包装类转对象
      *
      * @param questionVO

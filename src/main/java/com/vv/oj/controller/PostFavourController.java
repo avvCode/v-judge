@@ -28,9 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author vv
  */
-@RestController
-@RequestMapping("/post_favour")
-@Slf4j
+//@RestController
+//@RequestMapping("/post_favour")
+//@Slf4j
 public class PostFavourController {
 
     @Resource

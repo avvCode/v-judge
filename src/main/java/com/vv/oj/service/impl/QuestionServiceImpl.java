@@ -7,12 +7,13 @@ import com.vv.oj.common.ErrorCode;
 import com.vv.oj.constant.CommonConstant;
 import com.vv.oj.exception.BusinessException;
 import com.vv.oj.exception.ThrowUtils;
+import com.vv.oj.mapper.*;
 import com.vv.oj.model.dto.question.QuestionQueryRequest;
 import com.vv.oj.model.entity.*;
 import com.vv.oj.model.vo.QuestionVO;
+import com.vv.oj.model.vo.QuestionVO;
 import com.vv.oj.model.vo.UserVO;
 import com.vv.oj.service.QuestionService;
-import com.vv.oj.mapper.QuestionMapper;
 import com.vv.oj.service.UserService;
 import com.vv.oj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -35,7 +36,11 @@ import java.util.stream.Collectors;
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     implements QuestionService{
 
+    @Resource
+    private QuestionThumbMapper questionThumbMapper;
 
+    @Resource
+    private QuestionFavourMapper questionFavourMapper;
     @Resource
     private UserService userService;
 
@@ -114,20 +119,34 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
                 sortField);
         return queryWrapper;
     }
-
-
-
+    
     @Override
     public QuestionVO getQuestionVO(Question question, HttpServletRequest request) {
         QuestionVO questionVO = QuestionVO.objToVo(question);
         // 1. 关联查询用户信息
         Long userId = question.getUserId();
+        Long questionId = question.getId();
         User user = null;
         if (userId != null && userId > 0) {
             user = userService.getById(userId);
         }
         UserVO userVO = userService.getUserVO(user);
         questionVO.setUserVO(userVO);
+        User loginUser = userService.getLoginUserPermitNull(request);
+        if (loginUser != null) {
+            // 获取点赞
+            QueryWrapper<QuestionThumb> questionThumbQueryWrapper = new QueryWrapper<>();
+            questionThumbQueryWrapper.in("questionId", questionId);
+            questionThumbQueryWrapper.eq("userId", loginUser.getId());
+            QuestionThumb questionThumb = questionThumbMapper.selectOne(questionThumbQueryWrapper);
+            questionVO.setHasThumb(questionThumb != null);
+            // 获取收藏
+            QueryWrapper<QuestionFavour> questionFavourQueryWrapper = new QueryWrapper<>();
+            questionFavourQueryWrapper.in("questionId", questionId);
+            questionFavourQueryWrapper.eq("userId", loginUser.getId());
+            QuestionFavour questionFavour = questionFavourMapper.selectOne(questionFavourQueryWrapper);
+            questionVO.setHasFavour(questionFavour != null);
+        }
         return questionVO;
     }
 
@@ -138,10 +157,32 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         if (CollectionUtils.isEmpty(questionList)) {
             return questionVOPage;
         }
+        // 2. 已登录，获取用户点赞、收藏状态
+        Map<Long, Boolean> questionIdHasThumbMap = new HashMap<>();
+        Map<Long, Boolean> questionIdHasFavourMap = new HashMap<>();
+        
         // 1. 关联查询用户信息
         Set<Long> userIdSet = questionList.stream().map(Question::getUserId).collect(Collectors.toSet());
         Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
                 .collect(Collectors.groupingBy(User::getId));
+        
+        User loginUser = userService.getLoginUserPermitNull(request);
+        if (loginUser != null) {
+            Set<Long> questionIdSet = questionList.stream().map(Question::getId).collect(Collectors.toSet());
+            loginUser = userService.getLoginUser(request);
+            // 获取点赞
+            QueryWrapper<QuestionThumb> questionThumbQueryWrapper = new QueryWrapper<>();
+            questionThumbQueryWrapper.in("questionId", questionIdSet);
+            questionThumbQueryWrapper.eq("userId", loginUser.getId());
+            List<QuestionThumb> questionQuestionThumbList = questionThumbMapper.selectList(questionThumbQueryWrapper);
+            questionQuestionThumbList.forEach(questionQuestionThumb -> questionIdHasThumbMap.put(questionQuestionThumb.getQuestionId(), true));
+            // 获取收藏
+            QueryWrapper<QuestionFavour> questionFavourQueryWrapper = new QueryWrapper<>();
+            questionFavourQueryWrapper.in("questionId", questionIdSet);
+            questionFavourQueryWrapper.eq("userId", loginUser.getId());
+            List<QuestionFavour> questionFavourList = questionFavourMapper.selectList(questionFavourQueryWrapper);
+            questionFavourList.forEach(questionFavour -> questionIdHasFavourMap.put(questionFavour.getQuestionId(), true));
+        }
         // 填充信息
         List<QuestionVO> questionVOList = questionList.stream().map(question -> {
             QuestionVO questionVO = QuestionVO.objToVo(question);
@@ -151,6 +192,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
                 user = userIdUserListMap.get(userId).get(0);
             }
             questionVO.setUserVO(userService.getUserVO(user));
+            questionVO.setHasThumb(questionIdHasThumbMap.getOrDefault(question.getId(), false));
+            questionVO.setHasFavour(questionIdHasFavourMap.getOrDefault(question.getId(), false));
             return questionVO;
         }).collect(Collectors.toList());
         questionVOPage.setRecords(questionVOList);
