@@ -1,7 +1,7 @@
 package com.vv.oj.judge.strategy;
 
 
-import com.vv.oj.model.dto.questionsubmit.JudgeInfo;
+import com.vv.oj.judge.codesandbox.model.JudgeInfo;
 
 /**
  * 判题策略
