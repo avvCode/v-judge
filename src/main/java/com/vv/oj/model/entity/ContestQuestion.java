@@ -9,12 +9,12 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 赛事表
- * @TableName contest
+ * 题目
+ * @TableName contest_question
  */
-@TableName(value ="contest")
+@TableName(value ="contest_question")
 @Data
-public class Contest implements Serializable {
+public class ContestQuestion implements Serializable {
     /**
      * id
      */
@@ -22,38 +22,59 @@ public class Contest implements Serializable {
     private Long id;
 
     /**
-     * 赛事名称
+     * 赛事id
+     */
+    private Long contestId;
+
+    /**
+     * 题目
      */
     private String title;
 
     /**
-     * 赛事描述
+     * 内容
      */
-    private String description;
+    private String content;
 
     /**
-     * 开始时间
+     * 标签列表（json 数组）
      */
-    private String startTime;
+    private String tags;
 
-    /**
-     * 结束时间
-     */
-    private String endTime;
-    /**
-     * 参赛人数
-     */
-    private Integer joinNum;
     /**
      * 创建用户 id
      */
     private Long userId;
 
+    /**
+     * 题目答案
+     */
+    private String answer;
 
     /**
-     * 赛事状态 0-锁定 1-开启 2-正在进行 3-结束
+     * 题目提交数
      */
-    private Integer status;
+    private Integer submitNum;
+
+    /**
+     * 题目通过数
+     */
+    private Integer acceptedNum;
+
+    /**
+     * 判题用例（json数组）
+     */
+    private String judgeCase;
+
+    /**
+     * 判题配置（json对象）
+     */
+    private String judgeConfig;
+
+    /**
+     * 题目难度 0-简单 1-中等 2-困难
+     */
+    private Integer rate;
 
     /**
      * 创建时间

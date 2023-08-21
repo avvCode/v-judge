@@ -33,6 +33,11 @@ public class ContestUpdateRequest implements Serializable {
     private String description;
 
     /**
+     * 赛事状态 0-锁定 1-开启 2-正在进行 3-结束
+     */
+    private Integer status;
+
+    /**
      * 开始时间
      */
     private String startTime;

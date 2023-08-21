@@ -42,5 +42,10 @@ public class ContestAddRequest implements Serializable {
      */
     private Long userId;
 
+    /**
+     * 赛事状态 0-锁定 1-开启 2-正在进行 3-结束
+     */
+    private Integer status;
+
     private static final long serialVersionUID = 1L;
 }

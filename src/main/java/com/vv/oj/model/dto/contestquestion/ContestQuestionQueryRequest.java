@@ -1,14 +1,12 @@
-package com.vv.oj.model.dto.contest;
+package com.vv.oj.model.dto.contestquestion;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.vv.oj.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,43 +16,40 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ContestQueryRequest extends PageRequest implements Serializable {
+public class ContestQuestionQueryRequest extends PageRequest implements Serializable {
 
     /**
-     * 赛事id
+     * id
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * 赛事名称
+     * 题目
      */
     private String title;
 
     /**
-     * 赛事描述
+     * 内容
      */
-    private String description;
+    private String content;
 
     /**
-     * 开始时间
+     * 标签列表（json 数组）
      */
-    private String startTime;
+    private List<String> tags;
 
     /**
-     * 结束时间
+     * 题目难度 0-简单 1-中等 2-困难
      */
-    private String endTime;
-
+    private Integer rate;
 
     /**
      * 创建用户 id
      */
     private Long userId;
 
-    /**
-     * 赛事状态 0-锁定 1-开启 2-正在进行 3-结束
-     */
-    private Integer status;
+
 
     private static final long serialVersionUID = 1L;
 }

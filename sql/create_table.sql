@@ -96,7 +96,7 @@ create table if not exists contest
     endTime     varchar(128)                       not null comment '结束时间',
     userId     bigint                             not null comment '创建用户 id',
     joinNum     int     default 0                 null comment '参赛人数',
-    status     int      default 0                 not null comment '赛事状态 0-锁定 1-正在进行 2-结束',
+    status     int      default 0                 not null comment '赛事状态 0-锁定 1-开启 2-正在进行 3-结束',
     createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete   tinyint  default 0                 not null comment '是否删除',
@@ -104,13 +104,14 @@ create table if not exists contest
 ) comment '赛事表';
 
 -- 赛事题目表
-create table if not exists question
+create table if not exists contest_question
 (
     id          bigint auto_increment comment 'id' primary key,
-    contestId  bigint                             not null    comment '赛事id' primary key,
+    contestId  bigint                              not null    comment '赛事id',
     title       varchar(512)                       null comment '题目',
     content     text                               null comment '内容',
     tags        varchar(1024)                      null comment '标签列表（json 数组）',
+    userId     bigint                              not null comment '创建用户 id',
     answer      text                               null comment '题目答案',
     submitNum   int      default 0                 not null comment '题目提交数',
     acceptedNum int      default 0                 not null comment '题目通过数',

@@ -42,7 +42,7 @@ public class ContestVO {
     private UserVO userVO;
 
     /**
-     * 赛事状态 0-锁定 1-正在进行 2-结束
+     * 赛事状态 0-锁定 1-开启 2-正在进行 3-结束
      */
     private Integer status;
 
