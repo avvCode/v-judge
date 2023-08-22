@@ -13,6 +13,7 @@ import com.vv.oj.model.vo.ContestQuestionVO;
 import com.vv.oj.model.vo.UserVO;
 import com.vv.oj.service.ContestQuestionService;
 import com.vv.oj.mapper.ContestQuestionMapper;
+import com.vv.oj.service.ContestService;
 import com.vv.oj.service.UserService;
 import com.vv.oj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -39,6 +40,8 @@ public class ContestQuestionServiceImpl extends ServiceImpl<ContestQuestionMappe
     @Resource
     private UserService userService;
 
+    @Resource
+    private ContestService contestService;
     /**
      * 校验题目是否合法
      * @param contestQuestion
@@ -55,6 +58,11 @@ public class ContestQuestionServiceImpl extends ServiceImpl<ContestQuestionMappe
         String answer = contestQuestion.getAnswer();
         String judgeCase = contestQuestion.getJudgeCase();
         String judgeConfig = contestQuestion.getJudgeConfig();
+        Long contestId = contestQuestion.getContestId();
+        Contest contest = contestService.getById(contestId);
+        if(contest == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"未知比赛");
+        }
         // 创建时，参数不能为空
         if (add) {
             ThrowUtils.throwIf(StringUtils.isAnyBlank(title, content, tags), ErrorCode.PARAMS_ERROR);
@@ -97,6 +105,7 @@ public class ContestQuestionServiceImpl extends ServiceImpl<ContestQuestionMappe
         String sortField = contestQuestionQueryRequest.getSortField();
         String sortOrder = contestQuestionQueryRequest.getSortOrder();
         Integer rate = contestQuestionQueryRequest.getRate();
+        Long contestId = contestQuestionQueryRequest.getContestId();
 
         // 拼接查询条件
         queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
@@ -108,6 +117,7 @@ public class ContestQuestionServiceImpl extends ServiceImpl<ContestQuestionMappe
         }
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(contestId), "contestId", contestId);
         queryWrapper.eq(ObjectUtils.isNotEmpty(rate), "rate", rate);
         queryWrapper.eq("isDelete", false);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
@@ -137,10 +147,6 @@ public class ContestQuestionServiceImpl extends ServiceImpl<ContestQuestionMappe
         if (CollectionUtils.isEmpty(contestQuestionList)) {
             return contestQuestionVOPage;
         }
-        // 2. 已登录，获取用户点赞、收藏状态
-        Map<Long, Boolean> contestQuestionIdHasThumbMap = new HashMap<>();
-        Map<Long, Boolean> contestQuestionIdHasFavourMap = new HashMap<>();
-
         // 1. 关联查询用户信息
         Set<Long> userIdSet = contestQuestionList.stream().map(ContestQuestion::getUserId).collect(Collectors.toSet());
         Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()

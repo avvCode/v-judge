@@ -16,6 +16,11 @@ import java.util.List;
 public class ContestQuestionAddRequest implements Serializable {
 
     /**
+     * 赛事id
+     */
+    private Long contestId;
+
+    /**
      * 标题
      */
     private String title;

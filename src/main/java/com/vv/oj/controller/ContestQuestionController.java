@@ -74,9 +74,14 @@ public class ContestQuestionController {
         if (judgeConfig != null) {
             contestQuestion.setJudgeConfig(GSON.toJson(judgeConfig));
         }
+        Long contestId = contestQuestion.getContestId();
+        if(contestId == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
         contestQuestionService.validContestQuestion(contestQuestion, true);
         User loginUser = userService.getLoginUser(request);
         contestQuestion.setUserId(loginUser.getId());
+        contestQuestion.setContestId(contestId);
         boolean result = contestQuestionService.save(contestQuestion);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         long newContestQuestionId = contestQuestion.getId();

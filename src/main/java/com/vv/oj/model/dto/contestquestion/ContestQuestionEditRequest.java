@@ -20,7 +20,6 @@ public class ContestQuestionEditRequest implements Serializable {
     /**
      * id
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -62,6 +61,11 @@ public class ContestQuestionEditRequest implements Serializable {
      * 题目难度 0-简单 1-中等 2-困难
      */
     private Integer rate;
+
+    /**
+     * 赛事id
+     */
+    private Long contestId;
 
 
     private static final long serialVersionUID = 1L;

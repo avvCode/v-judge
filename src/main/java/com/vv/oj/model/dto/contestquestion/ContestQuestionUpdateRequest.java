@@ -20,8 +20,13 @@ public class ContestQuestionUpdateRequest implements Serializable {
     /**
      * id
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
+
+    /**
+     * 赛事id
+     */
+    private Long contestId;
+
 
     /**
      * 题目

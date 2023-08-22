@@ -21,8 +21,13 @@ public class ContestQuestionQueryRequest extends PageRequest implements Serializ
     /**
      * id
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
+
+    /**
+     * 赛事id
+     */
+    private Long contestId;
+
 
     /**
      * 题目
