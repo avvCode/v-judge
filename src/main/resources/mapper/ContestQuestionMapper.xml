@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.vv.oj.model.entity.ContestQuestion">
             <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="displayId" column="displayId" jdbcType="VARCHAR"/>
             <result property="contestId" column="contestId" jdbcType="BIGINT"/>
             <result property="title" column="title" jdbcType="VARCHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
@@ -23,10 +24,11 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,contestId,title,
-        content,tags,userId,
-        answer,submitNum,acceptedNum,
-        judgeCase,judgeConfig,rate,
-        createTime,updateTime,isDelete
+        id,displayId,contestId,
+        title,content,tags,
+        userId,answer,submitNum,
+        acceptedNum,judgeCase,judgeConfig,
+        rate,createTime,updateTime,
+        isDelete
     </sql>
 </mapper>

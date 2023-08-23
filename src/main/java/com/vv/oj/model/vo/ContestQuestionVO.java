@@ -20,6 +20,11 @@ public class ContestQuestionVO {
     private Long id;
 
     /**
+     * 展现时题目名称
+     */
+    private String displayId;
+
+    /**
      * 标题
      */
     private String title;

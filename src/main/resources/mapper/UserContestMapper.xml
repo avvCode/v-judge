@@ -11,10 +11,13 @@
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+            <result property="acceptNum" column="acceptNum" jdbcType="INTEGER"/>
+            <result property="total" column="total" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,userId,contestId,
-        createTime,updateTime,isDelete
+        createTime,updateTime,isDelete,
+        acceptNum,total
     </sql>
 </mapper>

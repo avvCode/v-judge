@@ -8,6 +8,9 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="title" column="title" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="announcements" column="announcements" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="INTEGER"/>
+            <result property="rules" column="rules" jdbcType="INTEGER"/>
             <result property="startTime" column="startTime" jdbcType="VARCHAR"/>
             <result property="endTime" column="endTime" jdbcType="VARCHAR"/>
             <result property="userId" column="userId" jdbcType="BIGINT"/>
@@ -20,6 +23,7 @@
 
     <sql id="Base_Column_List">
         id,title,description,
+        announcements,type,rules,
         startTime,endTime,userId,
         joinNum,status,createTime,
         updateTime,isDelete

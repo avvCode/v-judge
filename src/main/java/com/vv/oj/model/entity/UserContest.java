@@ -46,6 +46,16 @@ public class UserContest implements Serializable {
      */
     private Integer isDelete;
 
+    /**
+     * Ac数
+     */
+    private Integer acceptNum;
+
+    /**
+     * 总提交数
+     */
+    private Integer total;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

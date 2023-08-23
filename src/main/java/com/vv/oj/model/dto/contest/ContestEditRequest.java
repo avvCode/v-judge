@@ -38,6 +38,21 @@ public class ContestEditRequest implements Serializable {
     private Integer status;
 
     /**
+     * 赛事公告
+     */
+    private String announcements;
+
+    /**
+     * 赛事类型 0-公共 1-私有
+     */
+    private Integer type;
+
+    /**
+     * 赛事规则 0-ACM 1-OI
+     */
+    private Integer rules;
+
+    /**
      * 开始时间
      */
     private String startTime;

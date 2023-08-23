@@ -21,13 +21,14 @@ create table if not exists user
     updateTime   datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete     tinyint      default 0                 not null comment '是否删除',
     acNum        bigint       default 0                 null comment '题目通过数量'
-) comment '用户' collate = utf8mb4_unicode_ci;
+) comment '用户表' collate = utf8mb4_unicode_ci;
 
 -- 题目表
 create table if not exists question
 (
     id          bigint auto_increment comment 'id' primary key,
-    title       varchar(512)                       null comment '题目',
+    displayId   varchar(128)                   not null comment '展现时题目名称',
+    title       varchar(512)                       null comment '标题',
     content     text                               null comment '内容',
     tags        varchar(1024)                      null comment '标签列表（json 数组）',
     answer      text                               null comment '题目答案',
@@ -43,7 +44,7 @@ create table if not exists question
     updateTime  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete    tinyint  default 0                 not null comment '是否删除',
     index idx_userId (userId)
-) comment '题目' collate = utf8mb4_unicode_ci;
+) comment '题目表' collate = utf8mb4_unicode_ci;
 
 -- 题目点赞表（硬删除）
 create table if not exists question_thumb
@@ -53,9 +54,9 @@ create table if not exists question_thumb
     userId     bigint                             not null comment '创建用户 id',
     createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    index idx_postId (questionId),
+    index idx_questionId (questionId),
     index idx_userId (userId)
-) comment '题目点赞';
+) comment '题目点赞表（硬删除）';
 
 -- 题目收藏表（硬删除）
 create table if not exists question_favour
@@ -65,9 +66,9 @@ create table if not exists question_favour
     userId     bigint                             not null comment '创建用户 id',
     createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    index idx_postId (questionId),
+    index idx_questionId (questionId),
     index idx_userId (userId)
-) comment '题目收藏';
+) comment '题目收藏表（硬删除）';
 
 -- 题目提交表
 create table if not exists question_submit
@@ -77,14 +78,14 @@ create table if not exists question_submit
     judgeInfo  text                               null comment '判断信息（json对象）',
     status     int      default 0                 not null comment '判题状态',
     questionId bigint                             not null comment '题目id',
-    userId     bigint                             not null comment '创建用 id',
+    userId     bigint                             not null comment '创建用户 id',
     code       text                               not null comment '用户代码',
     createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete   tinyint  default 0                 not null comment '是否删除',
     index idx_questionId (questionId),
     index idx_userId (userId)
-) comment '题目提交';
+) comment '题目提交表';
 
 -- 赛事表
 create table if not exists contest
@@ -92,6 +93,9 @@ create table if not exists contest
     id         bigint auto_increment comment 'id' primary key,
     title           varchar(64)                       not null comment '赛事名称',
     description   varchar(128)                       not null comment '赛事描述',
+    announcements  text                           null comment '赛事公告',
+    type  int                      default 0    null comment '赛事类型 0-公共 1-私有',
+    rules  int                      default 0    null comment '赛事规则 0-ACM 1-OI',
     startTime   varchar(128)                       not null comment '开始时间',
     endTime     varchar(128)                       not null comment '结束时间',
     userId     bigint                             not null comment '创建用户 id',
@@ -107,6 +111,7 @@ create table if not exists contest
 create table if not exists contest_question
 (
     id          bigint auto_increment comment 'id' primary key,
+    displayId   varchar(128)                   not null comment '展现时题目名称',
     contestId  bigint                              not null    comment '赛事id',
     title       varchar(512)                       null comment '题目',
     content     text                               null comment '内容',
@@ -121,8 +126,8 @@ create table if not exists contest_question
     createTime  datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete    tinyint  default 0                 not null comment '是否删除',
-    index idx_userId (contestId)
-) comment '题目' collate = utf8mb4_unicode_ci;
+    index idx_contestId (contestId)
+) comment '赛事题目表' collate = utf8mb4_unicode_ci;
 
 -- 用户参赛记录表
 create table if not exists user_contest
@@ -130,11 +135,32 @@ create table if not exists user_contest
     id         bigint auto_increment comment 'id' primary key,
     userId     bigint                             not null comment '创建用 id',
     contestId     bigint                             not null comment '赛事id',
+    acceptNum     int        default 0                    null comment 'Ac数',
+    total     int        default 0                    null comment '总提交数',
     createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete   tinyint  default 0                 not null comment '是否删除',
-    index idx_userId (userId)
+    index idx_userId (userId),
+    index idx_contestId (contestId)
 ) comment '用户参赛记录表';
+
+-- 赛事题目提交表
+create table if not exists contest_question_submit
+(
+    id         bigint auto_increment comment 'id' primary key,
+    language   varchar(128)                       not null comment '编程语言',
+    judgeInfo  text                               null comment '判断信息（json对象）',
+    status     int      default 0                 not null comment '判题状态',
+    contestQuestionId bigint                             not null comment '赛事题目id',
+    userId     bigint                             not null comment '创建用 id',
+    code       text                               not null comment '用户代码',
+    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete   tinyint  default 0                 not null comment '是否删除',
+    index idx_contest_questionId (contestQuestionId),
+    index idx_userId (userId)
+) comment '赛事题目提交表';
+
 
 -- 题解表
 create table if not exists question_solving
@@ -149,7 +175,7 @@ create table if not exists question_solving
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete   tinyint  default 0                 not null comment '是否删除',
     index idx_userId (userId)
-) comment '题解' collate = utf8mb4_unicode_ci;
+) comment '题解表' collate = utf8mb4_unicode_ci;
 
 -- 题解点赞表（硬删除）
 create table if not exists question_solving_thumb
@@ -159,9 +185,9 @@ create table if not exists question_solving_thumb
     userId     bigint                             not null comment '创建用户 id',
     createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    index idx_postId (questionSolvingId),
+    index idx_questionSolvingId (questionSolvingId),
     index idx_userId (userId)
-) comment '题解点赞';
+) comment '题解点赞表（硬删除）';
 
 -- 评论表
 create table if not exists question_comment
@@ -175,7 +201,7 @@ create table if not exists question_comment
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete   tinyint  default 0                 not null comment '是否删除',
     index idx_userId (userId)
-) comment '评论' collate = utf8mb4_unicode_ci;
+) comment '评论表' collate = utf8mb4_unicode_ci;
 
 -- 评论点赞表（硬删除）
 create table if not exists question_comment_thumb
@@ -185,7 +211,7 @@ create table if not exists question_comment_thumb
     userId     bigint                             not null comment '创建用户 id',
     createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    index idx_postId (questionCommentId),
+    index idx_questionCommentId (questionCommentId),
     index idx_userId (userId)
-) comment '评论点赞';
+) comment '评论点赞表（硬删除）';
 

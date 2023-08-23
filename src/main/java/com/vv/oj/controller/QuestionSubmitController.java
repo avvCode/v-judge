@@ -7,6 +7,7 @@ import com.vv.oj.common.ResultUtils;
 import com.vv.oj.exception.BusinessException;
 import com.vv.oj.model.dto.questionsubmit.QuestionSubmitAddRequest;
 import com.vv.oj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
+import com.vv.oj.model.entity.Post;
 import com.vv.oj.model.entity.QuestionSubmit;
 import com.vv.oj.model.entity.User;
 import com.vv.oj.model.vo.QuestionSubmitVO;
@@ -74,6 +75,25 @@ public class QuestionSubmitController {
         final User loginUser = userService.getLoginUser(request);
         // 返回脱敏信息
         return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
+    }
+
+    /**
+     * 根据Id获取题目提交（除了管理员外，普通用户只能看到非答案、提交代码等公开信息）
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/get")
+    public BaseResponse<QuestionSubmitVO> getQuestionSubmitById(long id, HttpServletRequest request) {
+        if (id <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        QuestionSubmit questionSubmit = questionSubmitService.getById(id);
+        if (questionSubmit == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        final User loginUser = userService.getLoginUser(request);
+        return ResultUtils.success(questionSubmitService.getQuestionSubmitVO(questionSubmit, loginUser));
     }
 
 }

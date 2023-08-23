@@ -14,6 +14,8 @@ import com.vv.oj.exception.BusinessException;
 import com.vv.oj.exception.ThrowUtils;
 import com.vv.oj.model.dto.contest.ContestQueryRequest;
 import com.vv.oj.model.entity.*;
+import com.vv.oj.model.enums.ContestRuleEnum;
+import com.vv.oj.model.enums.ContestTypeEnum;
 import com.vv.oj.model.vo.ContestVO;
 import com.vv.oj.model.vo.PostVO;
 import com.vv.oj.model.vo.UserVO;
@@ -51,6 +53,8 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, Contest>
         String description = contest.getDescription();
         String startTime = contest.getStartTime();
         String endTime = contest.getEndTime();
+        Integer rules = contest.getRules();
+        Integer type = contest.getType();
         // 创建时，参数不能为空
         if (add) {
             ThrowUtils.throwIf(StringUtils.isAnyBlank(title), ErrorCode.PARAMS_ERROR);
@@ -62,6 +66,12 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, Contest>
         // 有参数则校验
         if (StringUtils.isNotBlank(description) && description.length() > 80) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "描述过长");
+        }
+        if(rules != ContestRuleEnum.ACM.getCode() && rules != ContestRuleEnum.OI.getCode()){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "错误的规则类型");
+        }
+        if(type != ContestTypeEnum.PRIVATE.getCode() && type != ContestTypeEnum.PUBLIC.getCode()){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "错误的比赛类型");
         }
 
         //获取输入的开始时间
@@ -97,9 +107,13 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, Contest>
         Long id = contestQueryRequest.getId();
         String title = contestQueryRequest.getTitle();
         Long userId = contestQueryRequest.getUserId();
+        Integer rules = contestQueryRequest.getRules();
+        Integer type = contestQueryRequest.getType();
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(rules), "rules", rules);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(type), "type", type);
         queryWrapper.eq("isDelete", false);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);

@@ -1,8 +1,11 @@
 package com.vv.oj.model.enums;
 
+import lombok.Getter;
+
 /**
  * @author vv
  */
+@Getter
 public enum ContestStatusEnum {
     BANDED(0,"禁用"),
     OPEN(1,"启用"),
