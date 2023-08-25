@@ -90,20 +90,21 @@ create table if not exists question_submit
 -- 赛事表
 create table if not exists contest
 (
-    id         bigint auto_increment comment 'id' primary key,
-    title           varchar(64)                       not null comment '赛事名称',
-    description   varchar(128)                       not null comment '赛事描述',
-    announcements  text                           null comment '赛事公告',
-    type  int                      default 0    null comment '赛事类型 0-公共 1-私有',
-    rules  int                      default 0    null comment '赛事规则 0-ACM 1-OI',
-    startTime   varchar(128)                       not null comment '开始时间',
-    endTime     varchar(128)                       not null comment '结束时间',
-    userId     bigint                             not null comment '创建用户 id',
-    joinNum     int     default 0                 null comment '参赛人数',
-    status     int      default 0                 not null comment '赛事状态 0-锁定 1-开启 2-正在进行 3-结束',
-    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    isDelete   tinyint  default 0                 not null comment '是否删除',
+    id            bigint auto_increment comment 'id' primary key,
+    title         varchar(64)                           not null comment '赛事名称',
+    description   varchar(128)                          not null comment '赛事描述',
+    announcements text                                  null comment '赛事公告',
+    type          int         default 0                 null comment '赛事类型 0-公共 1-私有',
+    password      varchar(12) default ''                null comment '密码，公共无，私有有',
+    rules         int         default 0                 null comment '赛事规则 0-ACM 1-OI',
+    startTime     varchar(128)                          not null comment '开始时间',
+    endTime       varchar(128)                          not null comment '结束时间',
+    userId        bigint                                not null comment '创建用户 id',
+    joinNum       int         default 0                 null comment '参赛人数',
+    status        int         default 0                 not null comment '赛事状态 0-锁定 1-开启 2-正在进行 3-结束',
+    createTime    datetime    default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime    datetime    default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete      tinyint     default 0                 not null comment '是否删除',
     index idx_userId (userId)
 ) comment '赛事表';
 
@@ -133,13 +134,16 @@ create table if not exists contest_question
 create table if not exists user_contest
 (
     id         bigint auto_increment comment 'id' primary key,
-    userId     bigint                             not null comment '创建用 id',
-    contestId     bigint                             not null comment '赛事id',
-    acceptNum     int        default 0                    null comment 'Ac数',
-    total     int        default 0                    null comment '总提交数',
-    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    isDelete   tinyint  default 0                 not null comment '是否删除',
+    userId     bigint                                not null comment '创建用户id',
+    contestId  bigint                                not null comment '赛事id',
+    acceptNum  int         default 0                 null comment 'AC数',
+    total      int         default 0                 null comment '总提交数',
+    ranking    int         default 0                 null comment '排名',
+    totalTime  varchar(32) default 0                 null comment '总耗时',
+    status     tinyint     default 0                 not null comment '比赛状态 0-正在参加（不显示） 1-结束（显示）',
+    createTime datetime    default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime datetime    default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete   tinyint     default 0                 not null comment '是否删除',
     index idx_userId (userId),
     index idx_contestId (contestId)
 ) comment '用户参赛记录表';
@@ -147,20 +151,20 @@ create table if not exists user_contest
 -- 赛事题目提交表
 create table if not exists contest_question_submit
 (
-    id         bigint auto_increment comment 'id' primary key,
-    language   varchar(128)                       not null comment '编程语言',
-    judgeInfo  text                               null comment '判断信息（json对象）',
-    status     int      default 0                 not null comment '判题状态',
+    id                bigint auto_increment comment 'id' primary key,
+    language          varchar(128)                       not null comment '编程语言',
+    judgeInfo         text                               null comment '判断信息（json对象）',
+    status            int      default 0                 not null comment '判题状态',
     contestQuestionId bigint                             not null comment '赛事题目id',
-    userId     bigint                             not null comment '创建用 id',
-    code       text                               not null comment '用户代码',
-    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    isDelete   tinyint  default 0                 not null comment '是否删除',
+    contestId         bigint                             not null comment '赛事id',
+    userId            bigint                             not null comment '创建用户id',
+    code              text                               not null comment '用户代码',
+    createTime        datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime        datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete          tinyint  default 0                 not null comment '是否删除',
     index idx_contest_questionId (contestQuestionId),
     index idx_userId (userId)
 ) comment '赛事题目提交表';
-
 
 -- 题解表
 create table if not exists question_solving

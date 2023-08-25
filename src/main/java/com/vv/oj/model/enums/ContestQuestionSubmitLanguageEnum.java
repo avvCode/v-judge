@@ -9,29 +9,18 @@ import java.util.stream.Collectors;
 /**
  * @author vv
  */
-public enum JudgeInfoMessageEnum {
-    ACCEPTED("成功", "Accepted", 0),
-    WRONG_ANSWER("答案错误", "Wrong Answer", 1),
-    COMPILE_ERROR("Compile Error", "编译错误", 2),
-    MEMORY_LIMIT_EXCEEDED("", "内存溢出", 3),
-    TIME_LIMIT_EXCEEDED("Time Limit Exceeded", "超时", 4),
-    PRESENTATION_ERROR("Presentation Error", "展示错误", 5),
-    WAITING("Waiting", "等待中", 6),
-    OUTPUT_LIMIT_EXCEEDED("Output Limit Exceeded", "输出溢出", 7),
-    DANGEROUS_OPERATION("Dangerous Operation", "危险操作", 8),
-    RUNTIME_ERROR("Runtime Error", "运行错误", 9),
-    SYSTEM_ERROR("System Error", "系统错误", 10);
+public enum ContestQuestionSubmitLanguageEnum {
+    JAVA("java", "java"),
+    CPLUSPLUS("cpp", "cpp"),
+    GOLANG("go", "go");
 
     private final String text;
 
     private final String value;
 
-    private final int code;
-
-    JudgeInfoMessageEnum(String text, String value, int code) {
+    ContestQuestionSubmitLanguageEnum(String text, String value) {
         this.text = text;
         this.value = value;
-        this.code = code;
     }
 
     /**
@@ -49,11 +38,11 @@ public enum JudgeInfoMessageEnum {
      * @param value
      * @return
      */
-    public static JudgeInfoMessageEnum getEnumByValue(String value) {
+    public static ContestQuestionSubmitLanguageEnum getEnumByValue(String value) {
         if (ObjectUtils.isEmpty(value)) {
             return null;
         }
-        for (JudgeInfoMessageEnum anEnum : JudgeInfoMessageEnum.values()) {
+        for (ContestQuestionSubmitLanguageEnum anEnum : ContestQuestionSubmitLanguageEnum.values()) {
             if (anEnum.value.equals(value)) {
                 return anEnum;
             }

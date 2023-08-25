@@ -1,7 +1,7 @@
 package com.vv.oj.mapper;
 
-import com.vv.oj.model.entity.UserContest;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.vv.oj.model.entity.UserContest;
 
 /**
  * 用户参赛记录表

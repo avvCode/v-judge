@@ -32,6 +32,11 @@ public class ContestVO {
     private String announcements;
 
     /**
+     * 参赛人数
+     */
+    private Integer joinNum;
+
+    /**
      * 赛事类型 0-公共 1-私有
      */
     private Integer type;

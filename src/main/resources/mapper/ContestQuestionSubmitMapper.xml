@@ -10,6 +10,7 @@
             <result property="judgeInfo" column="judgeInfo" jdbcType="VARCHAR"/>
             <result property="status" column="status" jdbcType="INTEGER"/>
             <result property="contestQuestionId" column="contestQuestionId" jdbcType="BIGINT"/>
+            <result property="contestId" column="contestId" jdbcType="BIGINT"/>
             <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="code" column="code" jdbcType="VARCHAR"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
@@ -19,8 +20,8 @@
 
     <sql id="Base_Column_List">
         id,language,judgeInfo,
-        status,contestQuestionId,userId,
-        code,createTime,updateTime,
-        isDelete
+        status,contestQuestionId,contestId,
+        userId,code,createTime,
+        updateTime,isDelete
     </sql>
 </mapper>

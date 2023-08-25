@@ -1,25 +1,20 @@
-package com.vv.oj.model.entity;
+package com.vv.oj.model.dto.contestquestionsubmit;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
 /**
- * 题目提交
- * @TableName contest_question_submit
+ * 创建请求
+ *
  */
-@TableName(value ="contest_question_submit")
 @Data
-public class ContestQuestionSubmit implements Serializable {
-    /**
-     * id
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
+public class ContestQuestionSubmitAddRequest implements Serializable {
 
     /**
      * 编程语言
@@ -56,21 +51,6 @@ public class ContestQuestionSubmit implements Serializable {
      */
     private String code;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
 
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    /**
-     * 是否删除
-     */
-    private Integer isDelete;
-
-    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

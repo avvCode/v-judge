@@ -1,15 +1,15 @@
 package com.vv.oj.model.dto.post;
 
-import com.vv.oj.common.PageRequest;
 import java.io.Serializable;
 import java.util.List;
+
+import com.vv.oj.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
  * 查询请求
  *
- * @author vv
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
