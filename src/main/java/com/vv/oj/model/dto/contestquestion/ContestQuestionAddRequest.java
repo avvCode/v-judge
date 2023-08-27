@@ -21,6 +21,11 @@ public class ContestQuestionAddRequest implements Serializable {
     private Long contestId;
 
     /**
+     * 展现时题目名称
+     */
+    private String displayId;
+
+    /**
      * 标题
      */
     private String title;

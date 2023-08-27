@@ -6,12 +6,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vv.oj.common.ErrorCode;
 import com.vv.oj.constant.CommonConstant;
 import com.vv.oj.exception.BusinessException;
+import com.vv.oj.mapper.ContestQuestionMapper;
 import com.vv.oj.mapper.ContestQuestionSubmitMapper;
+import com.vv.oj.mapper.UserMapper;
+import com.vv.oj.model.dto.contestquestion.UserContestRanking;
 import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitAddRequest;
 import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitQueryRequest;
-import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitAddRequest;
-import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitQueryRequest;
-import com.vv.oj.model.entity.ContestQuestionSubmit;
+import com.vv.oj.model.dto.contestquestionsubmit.ContestRankingQueryRequest;
 import com.vv.oj.model.entity.ContestQuestion;
 import com.vv.oj.model.entity.ContestQuestionSubmit;
 import com.vv.oj.model.entity.User;
@@ -19,9 +20,10 @@ import com.vv.oj.model.enums.ContestQuestionSubmitLanguageEnum;
 import com.vv.oj.model.enums.ContestQuestionSubmitStatusEnum;
 import com.vv.oj.model.vo.ContestQuestionSubmitVO;
 import com.vv.oj.model.vo.ContestQuestionVO;
+import com.vv.oj.model.vo.ContestRankingVO;
 import com.vv.oj.model.vo.UserVO;
-import com.vv.oj.service.ContestQuestionSubmitService;
 import com.vv.oj.service.ContestQuestionService;
+import com.vv.oj.service.ContestQuestionSubmitService;
 import com.vv.oj.service.UserService;
 import com.vv.oj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -30,22 +32,31 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
 * @author zyz19
 * @description 针对表【contest_contestQuestion_submit(赛事题目提交表)】的数据库操作Service实现
-* @createDate 2023-08-25 19:55:00
-*/
+ * @createDate 2023-08-25 19:55:00
+ */
 @Service
 public class ContestQuestionSubmitServiceImpl extends ServiceImpl<ContestQuestionSubmitMapper, ContestQuestionSubmit>
-    implements ContestQuestionSubmitService{
+        implements ContestQuestionSubmitService {
     @Resource
     private ContestQuestionService contestQuestionService;
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private UserMapper userMapper;
+
+    @Resource
+    private ContestQuestionMapper contestQuestionMapper;
 
     /**
      * 提交题目
@@ -155,6 +166,99 @@ public class ContestQuestionSubmitServiceImpl extends ServiceImpl<ContestQuestio
                 .collect(Collectors.toList());
         contestQuestionSubmitVOPage.setRecords(contestQuestionSubmitVOList);
         return contestQuestionSubmitVOPage;
+    }
+
+    @Override
+    public Page<ContestRankingVO> getContestRankingVO(ContestRankingQueryRequest contestRankingQueryRequest) {
+        Long contestId = contestRankingQueryRequest.getContestId();
+        long current = contestRankingQueryRequest.getCurrent();
+        long size = contestRankingQueryRequest.getPageSize();
+        List<ContestRankingVO> rankingVOS = new ArrayList<>();
+        QueryWrapper<ContestQuestionSubmit> queryUserIdWrapper = new QueryWrapper<>();
+        queryUserIdWrapper.select("distinct userId");
+        queryUserIdWrapper.eq("contestId", contestId);
+        Page<ContestQuestionSubmit> contestQuestionSubmitPage = page(new Page<>(current, size), queryUserIdWrapper);
+        //根据这个分页里面的数据，各自查询提交记录
+        List<Long> userIds = contestQuestionSubmitPage
+                .getRecords()
+                .stream()
+                .map(ContestQuestionSubmit::getUserId)
+                .collect(Collectors.toList());
+        //查询出每道题目的信息
+        QueryWrapper<ContestQuestion> contestQuestionQueryWrapper = new QueryWrapper<>();
+        contestQuestionQueryWrapper.select("id").eq("contestId", contestId);
+        List<ContestQuestion> contestQuestions = contestQuestionMapper.selectList(contestQuestionQueryWrapper);
+        List<Long> contestQuestionIds = contestQuestions.stream().map(ContestQuestion::getId).collect(Collectors.toList());
+
+        //查出每道题第一个AC的人，后续可以放入缓存
+        HashMap<Long, Long> firstAcUser = new HashMap<>();
+        for (Long contestQuestionId : contestQuestionIds) {
+            QueryWrapper<ContestQuestionSubmit> queryFirstSubmit = new QueryWrapper<>();
+            queryFirstSubmit
+                    .select("userId")
+                    .eq("contestQuestionId", contestQuestionId)
+                    .eq("result", 0)
+                    .orderByAsc("createTime");
+            List<ContestQuestionSubmit> list = list(queryFirstSubmit);
+            if (list.size() > 0) {
+                firstAcUser.put(contestQuestionId, list.get(0).getUserId());
+            }
+        }
+
+        for (Long userId : userIds) {
+            ContestRankingVO contestRankingVO = new ContestRankingVO();
+
+            int totalAcNum = 0;
+            int total = 0;
+            Map<String, UserContestRanking> map = new HashMap<>();
+            for (Long contestQuestionId : contestQuestionIds) {
+                //根据每个用户id，查询出对所有题目的提交记录
+                UserContestRanking userContestRanking = new UserContestRanking();
+                int wrongNum = 0; //对某题错误数
+                String createTime = ""; //对某题提交时间
+                boolean isAc = false;
+                QueryWrapper<ContestQuestionSubmit> queryUserSubmitWrapper = new QueryWrapper<>();
+                queryUserSubmitWrapper
+                        .eq("userId", userId)
+                        .eq("contestQuestionId", contestQuestionId)
+                        .eq("contestId", contestId);
+                List<ContestQuestionSubmit> list = list(queryUserSubmitWrapper);
+                for (ContestQuestionSubmit contestQuestionSubmit : list) {
+                    //TODO 统计AC数
+                    Integer result = contestQuestionSubmit.getResult();
+                    if (result == 0) {
+                        isAc = true;
+                    } else if (result != 6){
+                        wrongNum++;
+                    }
+                }
+                ContestQuestion contestQuestion = contestQuestionMapper.selectById(contestQuestionId);
+                userContestRanking.setDisplayId(contestQuestion.getDisplayId());
+                userContestRanking.setTotal(list.size());
+                userContestRanking.setWrongNum(wrongNum);
+                userContestRanking.setTotalTime(createTime);
+                userContestRanking.setAc(isAc);
+                //是否是当前题目第一个AC的人
+                if (userId.equals(firstAcUser.get(contestQuestionId))) {
+                    userContestRanking.setFirst(true);
+                }
+                //
+                if (isAc) {
+                    totalAcNum++;
+                }
+                total += list.size();
+                map.put(contestQuestion.getDisplayId(), userContestRanking);
+            }
+            User user = userMapper.selectById(userId);
+            contestRankingVO.setAcNum(totalAcNum);
+            contestRankingVO.setTotal(total);
+            contestRankingVO.setUserName(user.getUserName());
+            contestRankingVO.setUserContestRankingMap(map);
+            rankingVOS.add(contestRankingVO);
+        }
+        Page<ContestRankingVO> rankingVOPage = new Page<>();
+        rankingVOPage.setRecords(rankingVOS);
+        return rankingVOPage;
     }
 }
 

@@ -24,6 +24,11 @@ public class ContestQuestionQueryRequest extends PageRequest implements Serializ
     private Long id;
 
     /**
+     * 展现时题目名称
+     */
+    private String displayId;
+
+    /**
      * 赛事id
      */
     private Long contestId;

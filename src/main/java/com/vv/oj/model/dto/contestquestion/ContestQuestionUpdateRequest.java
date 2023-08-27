@@ -27,6 +27,10 @@ public class ContestQuestionUpdateRequest implements Serializable {
      */
     private Long contestId;
 
+    /**
+     * 展现时题目名称
+     */
+    private String displayId;
 
     /**
      * 题目

@@ -67,6 +67,10 @@ public class ContestQuestionEditRequest implements Serializable {
      */
     private Long contestId;
 
+    /**
+     * 展现时题目名称
+     */
+    private String displayId;
 
     private static final long serialVersionUID = 1L;
 }

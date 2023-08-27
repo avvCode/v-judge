@@ -49,5 +49,10 @@ public class ContestQuestionSubmitQueryRequest extends PageRequest implements Se
      */
     private Long userId;
 
+    /**
+     * 判题结果 0-10
+     */
+    private Integer result;
+
     private static final long serialVersionUID = 1L;
 }

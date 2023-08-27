@@ -71,6 +71,11 @@ public class ContestQuestionSubmit implements Serializable {
      */
     private Integer isDelete;
 
+    /**
+     * 判题结果 0-10
+     */
+    private Integer result;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitAddRequest;
 import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitQueryRequest;
+import com.vv.oj.model.dto.contestquestionsubmit.ContestRankingQueryRequest;
 import com.vv.oj.model.entity.ContestQuestionSubmit;
 import com.vv.oj.model.entity.User;
 import com.vv.oj.model.vo.ContestQuestionSubmitVO;
+import com.vv.oj.model.vo.ContestRankingVO;
 
 /**
  * @author zyz19
@@ -49,4 +51,7 @@ public interface ContestQuestionSubmitService extends IService<ContestQuestionSu
      * @return
      */
     Page<ContestQuestionSubmitVO> getContestQuestionSubmitVOPage(Page<ContestQuestionSubmit> contestContestQuestionSubmitPage, User loginUser);
+
+
+    Page<ContestRankingVO> getContestRankingVO(ContestRankingQueryRequest contestRankingQueryRequest);
 }

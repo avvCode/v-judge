@@ -65,6 +65,11 @@ public class ContestQuestionSubmitVO {
     private UserVO userVO;
 
     /**
+     * 判题结果 0-10
+     */
+    private Integer result;
+
+    /**
      * 对应题目信息
      */
     private ContestQuestionVO contestQuestionVO;

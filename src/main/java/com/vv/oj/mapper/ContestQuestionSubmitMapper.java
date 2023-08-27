@@ -2,6 +2,9 @@ package com.vv.oj.mapper;
 
 import com.vv.oj.model.entity.ContestQuestionSubmit;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author zyz19
@@ -10,7 +13,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.vv.oj.model.entity.ContestQuestionSubmit
 */
 public interface ContestQuestionSubmitMapper extends BaseMapper<ContestQuestionSubmit> {
-
+    List<String> getAllUser(@Param("contestId")Integer contestId);
 }
 
 

@@ -16,6 +16,7 @@ import com.vv.oj.model.dto.contest.ContestQueryRequest;
 import com.vv.oj.model.dto.contest.ContestUpdateRequest;
 import com.vv.oj.model.entity.Contest;
 import com.vv.oj.model.entity.User;
+import com.vv.oj.model.vo.ContestRankingVO;
 import com.vv.oj.model.vo.ContestVO;
 import com.vv.oj.service.ContestService;
 import com.vv.oj.service.UserService;
@@ -212,5 +213,6 @@ public class ContestController {
         boolean result = contestService.updateById(contest);
         return ResultUtils.success(result);
     }
+
 
 }

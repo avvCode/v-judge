@@ -7,17 +7,16 @@ import com.vv.oj.common.ResultUtils;
 import com.vv.oj.exception.BusinessException;
 import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitAddRequest;
 import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitQueryRequest;
+import com.vv.oj.model.dto.contestquestionsubmit.ContestRankingQueryRequest;
 import com.vv.oj.model.entity.ContestQuestionSubmit;
 import com.vv.oj.model.entity.ContestQuestionSubmit;
 import com.vv.oj.model.entity.User;
 import com.vv.oj.model.vo.ContestQuestionSubmitVO;
+import com.vv.oj.model.vo.ContestRankingVO;
 import com.vv.oj.service.ContestQuestionSubmitService;
 import com.vv.oj.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -92,5 +91,12 @@ public class ContestQuestionSubmitController {
         final User loginUser = userService.getLoginUser(request);
         return ResultUtils.success(contestQuestionSubmitService.getContestQuestionSubmitVO(contestQuestionSubmit, loginUser));
     }
-
+    @PostMapping("/ranking")
+    public BaseResponse<Page<ContestRankingVO>> getContestRanking(ContestRankingQueryRequest contestRankingQueryRequest){
+        if(contestRankingQueryRequest == null || contestRankingQueryRequest.getContestId() <= 0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Page<ContestRankingVO> rankingVOPage = contestQuestionSubmitService.getContestRankingVO(contestRankingQueryRequest);
+        return ResultUtils.success(rankingVOPage);
+    }
 }

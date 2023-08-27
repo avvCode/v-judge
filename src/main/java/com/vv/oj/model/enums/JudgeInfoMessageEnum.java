@@ -1,5 +1,6 @@
 package com.vv.oj.model.enums;
 
+import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.util.Arrays;
@@ -9,11 +10,12 @@ import java.util.stream.Collectors;
 /**
  * @author vv
  */
+@Getter
 public enum JudgeInfoMessageEnum {
-    ACCEPTED("成功", "Accepted", 0),
-    WRONG_ANSWER("答案错误", "Wrong Answer", 1),
+    ACCEPTED("Accepted", "成功", 0),
+    WRONG_ANSWER("Wrong Answer", "答案错误", 1),
     COMPILE_ERROR("Compile Error", "编译错误", 2),
-    MEMORY_LIMIT_EXCEEDED("", "内存溢出", 3),
+    MEMORY_LIMIT_EXCEEDED("Memory_Limit_exceeded", "内存溢出", 3),
     TIME_LIMIT_EXCEEDED("Time Limit Exceeded", "超时", 4),
     PRESENTATION_ERROR("Presentation Error", "展示错误", 5),
     WAITING("Waiting", "等待中", 6),
@@ -59,13 +61,5 @@ public enum JudgeInfoMessageEnum {
             }
         }
         return null;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public String getText() {
-        return text;
     }
 }
