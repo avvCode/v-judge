@@ -1,5 +1,7 @@
 package com.vv.oj.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import com.vv.oj.annotation.AuthCheck;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 题目接口
@@ -293,5 +296,13 @@ public class ContestQuestionController {
         boolean result = contestQuestionService.updateById(contestQuestion);
         return ResultUtils.success(result);
     }
-
+    @GetMapping("/get/displays")
+    public BaseResponse<List<String>> getAllDisplayId(long contestId){
+        if(contestId <= 0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        List<ContestQuestion> list = contestQuestionService.list(new QueryWrapper<ContestQuestion>().select("displayId").eq("contestId", contestId));
+        List<String> displayIds = list.stream().map(ContestQuestion::getDisplayId).collect(Collectors.toList());
+        return ResultUtils.success(displayIds);
+    }
 }

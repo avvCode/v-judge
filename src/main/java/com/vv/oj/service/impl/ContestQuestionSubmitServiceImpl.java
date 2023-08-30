@@ -1,11 +1,17 @@
 package com.vv.oj.service.impl;
 
+import cn.hutool.core.date.BetweenFormatter;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.format.FastDateFormat;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vv.oj.common.ErrorCode;
 import com.vv.oj.constant.CommonConstant;
 import com.vv.oj.exception.BusinessException;
+import com.vv.oj.mapper.ContestMapper;
 import com.vv.oj.mapper.ContestQuestionMapper;
 import com.vv.oj.mapper.ContestQuestionSubmitMapper;
 import com.vv.oj.mapper.UserMapper;
@@ -13,6 +19,7 @@ import com.vv.oj.model.dto.contestquestion.UserContestRanking;
 import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitAddRequest;
 import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitQueryRequest;
 import com.vv.oj.model.dto.contestquestionsubmit.ContestRankingQueryRequest;
+import com.vv.oj.model.entity.Contest;
 import com.vv.oj.model.entity.ContestQuestion;
 import com.vv.oj.model.entity.ContestQuestionSubmit;
 import com.vv.oj.model.entity.User;
@@ -32,10 +39,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -57,6 +61,9 @@ public class ContestQuestionSubmitServiceImpl extends ServiceImpl<ContestQuestio
 
     @Resource
     private ContestQuestionMapper contestQuestionMapper;
+
+    @Resource
+    private ContestMapper contestMapper;
 
     /**
      * 提交题目
@@ -174,6 +181,7 @@ public class ContestQuestionSubmitServiceImpl extends ServiceImpl<ContestQuestio
         long current = contestRankingQueryRequest.getCurrent();
         long size = contestRankingQueryRequest.getPageSize();
         List<ContestRankingVO> rankingVOS = new ArrayList<>();
+        Contest contest = contestMapper.selectById(contestId);
         QueryWrapper<ContestQuestionSubmit> queryUserIdWrapper = new QueryWrapper<>();
         queryUserIdWrapper.select("distinct userId");
         queryUserIdWrapper.eq("contestId", contestId);
@@ -215,7 +223,7 @@ public class ContestQuestionSubmitServiceImpl extends ServiceImpl<ContestQuestio
                 //根据每个用户id，查询出对所有题目的提交记录
                 UserContestRanking userContestRanking = new UserContestRanking();
                 int wrongNum = 0; //对某题错误数
-                String createTime = ""; //对某题提交时间
+                Date acTime = null; //对某题提交时间
                 boolean isAc = false;
                 QueryWrapper<ContestQuestionSubmit> queryUserSubmitWrapper = new QueryWrapper<>();
                 queryUserSubmitWrapper
@@ -228,6 +236,7 @@ public class ContestQuestionSubmitServiceImpl extends ServiceImpl<ContestQuestio
                     Integer result = contestQuestionSubmit.getResult();
                     if (result == 0) {
                         isAc = true;
+                        acTime = contestQuestionSubmit.getCreateTime();
                     } else if (result != 6){
                         wrongNum++;
                     }
@@ -236,7 +245,16 @@ public class ContestQuestionSubmitServiceImpl extends ServiceImpl<ContestQuestio
                 userContestRanking.setDisplayId(contestQuestion.getDisplayId());
                 userContestRanking.setTotal(list.size());
                 userContestRanking.setWrongNum(wrongNum);
-                userContestRanking.setTotalTime(createTime);
+                if(acTime != null){
+                    DateTime startTime = DateUtil.parseDate(contest.getStartTime());
+                    long diffSeconds = DateUtil.between(acTime, startTime, DateUnit.SECOND);
+                    // 将时间差转换为 HH:mm:ss 格式
+                    long diffHours = diffSeconds / (60 * 60);
+                    long diffMinutes = (diffSeconds % (60 * 60)) / 60;
+                    diffSeconds = diffSeconds % 60;
+                    String timeDiff = String.format("%02d:%02d:%02d", diffHours, diffMinutes, diffSeconds);
+                    userContestRanking.setTotalTime(timeDiff);
+                }
                 userContestRanking.setAc(isAc);
                 //是否是当前题目第一个AC的人
                 if (userId.equals(firstAcUser.get(contestQuestionId))) {
