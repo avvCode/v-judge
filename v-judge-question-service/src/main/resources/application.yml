@@ -34,10 +34,11 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
   rabbitmq:
-    host: localhost
+    host: 106.55.197.233
     port: 5672
-    password: guest
-    username: guest
+    password: wei1712531751
+    username: vv
+    virtual-host: my_vhost
 server:
   address: 0.0.0.0
   port: 9002

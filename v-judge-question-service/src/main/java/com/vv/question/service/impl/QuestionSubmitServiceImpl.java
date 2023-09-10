@@ -18,6 +18,7 @@ import com.vv.model.vo.QuestionSubmitVO;
 import com.vv.model.vo.QuestionVO;
 import com.vv.model.vo.UserVO;
 import com.vv.question.mapper.QuestionSubmitMapper;
+import com.vv.question.rabbitmq.MyMessageProducer;
 import com.vv.question.service.QuestionService;
 import com.vv.question.service.QuestionSubmitService;
 import com.vv.service.UserFeignClient;
@@ -43,6 +44,9 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
 
     @Resource
     private UserFeignClient userFeignClient;
+
+    @Resource
+    private MyMessageProducer myMessageProducer;
 
     /**
      * 提交题目
@@ -80,7 +84,12 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         if (!save){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "数据插入失败");
         }
-        return questionSubmit.getId();
+        Long questionSubmitId = questionSubmit.getId();
+        // 发送消息到消息队列
+        myMessageProducer.sendMessage("judge_exchange",
+                "question",
+                String.valueOf(questionSubmitId));
+        return questionSubmitId;
     }
 
 

@@ -12,18 +12,29 @@ import lombok.extern.slf4j.Slf4j;
 public class InitRabbitMq {
 
     public static void doInit() {
+
         try {
+            //创建一个连接工厂
             ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost("localhost");
+            //连接rabbitmq队列
+            factory.setHost("106.55.197.233");
+            //用户名
+            factory.setUsername("vv");
+            //密码
+            factory.setPassword("wei1712531751");
+            //设置虚拟主机
+            factory.setVirtualHost("my_vhost");
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
-            String EXCHANGE_NAME = "code_exchange";
+            String EXCHANGE_NAME = "judge_exchange";
             channel.exchangeDeclare(EXCHANGE_NAME, "direct");
 
             // 创建队列，随机分配一个队列名称
-            String queueName = "code_queue";
-            channel.queueDeclare(queueName, true, false, false, null);
-            channel.queueBind(queueName, EXCHANGE_NAME, "my_routingKey");
+            String QUEUE_NAME = "question";
+            String ROUTING_KEY = "question";
+
+            channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+            channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
             log.info("消息队列启动成功");
         } catch (Exception e) {
             log.error("消息队列启动失败");
