@@ -6,7 +6,7 @@ spring:
     active: dev
   # 支持 swagger3
   mvc:
-    pathmatch:
+    path match:
       matching-strategy: ant_path_matcher
   # session 配置
   session:
@@ -40,7 +40,7 @@ spring:
     username: guest
 server:
   address: 0.0.0.0
-  port: 9002
+  port: 9003
   servlet:
     context-path: /api/contest
     # cookie 30 天过期

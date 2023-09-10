@@ -1,2 +1,40 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      routes:
+        - id: v-judge-user-service
+          uri: lb://v-judge-user-service
+          predicates:
+            - Path=/api/user/**
+        - id: v-judge-question-service
+          uri: lb://v-judge-question-service
+          predicates:
+            - Path=/api/question/**
+        - id: v-judge-contest-service
+          uri: lb://v-judge-contest-service
+          predicates:
+            - Path=/api/contest/**
+        - id: v-judge-judge-service
+          uri: lb://v-judge-judge-service
+          predicates:
+            - Path=/api/judge/**
+  application:
+    name: v-judge-gateway-service
+  main:
+    web-application-type: reactive
 server:
   port: 9000
+knife4j:
+  gateway:
+    # ① 第一个配置，开启gateway聚合组件
+    enabled: true
+    # ② 第二行配置，设置聚合模式采用discover服务发现的模式
+    strategy: discover
+    discover:
+      # ③ 第三行配置，开启discover模式
+      enabled: true
+      # ④ 第四行配置，聚合子服务全部为Swagger2规范的文档
+      version: swagger2

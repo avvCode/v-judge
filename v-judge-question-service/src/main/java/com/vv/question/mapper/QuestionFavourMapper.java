@@ -25,7 +25,7 @@ public interface QuestionFavourMapper extends BaseMapper<QuestionFavour> {
      * @return
      */
     Page<Question> listFavourQuestionByPage(IPage<Question> page, @Param(Constants.WRAPPER) Wrapper<Question> queryWrapper,
-                                            long favourUserId);
+                                            @Param("favourUserId") long favourUserId);
 }
 
 

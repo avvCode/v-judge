@@ -6,7 +6,7 @@ spring:
     active: dev
   # 支持 swagger3
   mvc:
-    pathmatch:
+    path match:
       matching-strategy: ant_path_matcher
   # session 配置
   session:

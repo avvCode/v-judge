@@ -19,9 +19,9 @@
 
     <select id="listFavourQuestionByPage"
             resultType="com.vv.model.entity.Question">
-        select p.*
-        from question p
-                 join (select questionId from question_favour where userId = #{favourUserId}) pf
-                      on p.id = pf.questionId ${ew.customSqlSegment}
+        select q.*
+        from question q
+                 join (select questionId from question_favour where userId = #{favourUserId}) qf
+                      on q.id = qf.questionId ${ew.customSqlSegment}
     </select>
 </mapper>

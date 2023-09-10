@@ -1,4 +1,4 @@
-package com.vv.user.config;
+package com.vv.common.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;

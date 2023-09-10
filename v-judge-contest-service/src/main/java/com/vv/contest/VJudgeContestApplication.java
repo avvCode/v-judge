@@ -1,4 +1,4 @@
-package com.vv.user;
+package com.vv.contest;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -13,14 +13,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @author vv
  */
 @SpringBootApplication
-@MapperScan("com.vv.user.mapper")
+@MapperScan("com.vv.contest.mapper")
 @EnableScheduling
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @ComponentScan("com.vv")
 @EnableDiscoveryClient
 @EnableFeignClients(basePackages = {"com.vv.service"})
-public class VJudgeUserApplication {
+public class VJudgeContestApplication {
     public static void main(String[] args) {
-        SpringApplication.run(VJudgeUserApplication.class, args);
+        SpringApplication.run(VJudgeContestApplication.class, args);
     }
 }
