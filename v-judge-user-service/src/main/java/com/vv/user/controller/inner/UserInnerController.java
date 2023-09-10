@@ -1,6 +1,7 @@
-package com.vv.user.controller;
+package com.vv.user.controller.inner;
 
 import com.vv.model.entity.User;
+import com.vv.model.vo.UserVO;
 import com.vv.service.UserFeignClient;
 import com.vv.user.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,4 +45,8 @@ public class UserInnerController implements UserFeignClient {
         return userService.listByIds(idList);
     }
 
+    @Override
+    public UserVO getVOById(long userId) {
+        return userService.getUserVOById(userId);
+    }
 }

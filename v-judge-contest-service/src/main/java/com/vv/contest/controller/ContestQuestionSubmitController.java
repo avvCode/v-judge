@@ -1,20 +1,19 @@
 package com.vv.contest.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.vv.oj.common.BaseResponse;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.common.ResultUtils;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitAddRequest;
-import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitQueryRequest;
-import com.vv.oj.model.dto.contestquestionsubmit.ContestRankingQueryRequest;
-import com.vv.oj.model.entity.ContestQuestionSubmit;
-import com.vv.oj.model.entity.ContestQuestionSubmit;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.model.vo.ContestQuestionSubmitVO;
-import com.vv.oj.model.vo.ContestRankingVO;
-import com.vv.oj.service.ContestQuestionSubmitService;
-import com.vv.oj.service.UserService;
+import com.vv.common.common.BaseResponse;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.common.ResultUtils;
+import com.vv.common.exception.BusinessException;
+import com.vv.contest.service.ContestQuestionSubmitService;
+import com.vv.model.dto.contestquestionsubmit.ContestQuestionSubmitAddRequest;
+import com.vv.model.dto.contestquestionsubmit.ContestQuestionSubmitQueryRequest;
+import com.vv.model.dto.contestquestionsubmit.ContestRankingQueryRequest;
+import com.vv.model.entity.ContestQuestionSubmit;
+import com.vv.model.entity.User;
+import com.vv.model.vo.ContestQuestionSubmitVO;
+import com.vv.model.vo.ContestRankingVO;
+import com.vv.service.UserFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,8 +30,9 @@ public class ContestQuestionSubmitController {
     @Resource
     private ContestQuestionSubmitService contestQuestionSubmitService;
 
+
     @Resource
-    private UserService userService;
+    private UserFeignClient userFeignClient;
 
     /**
      * 提交题目
@@ -43,11 +43,11 @@ public class ContestQuestionSubmitController {
      */
     @PostMapping("/")
     public BaseResponse<Long> doContestQuestionSubmit(@RequestBody ContestQuestionSubmitAddRequest contestQuestionSubmitAddRequest,
-                                               HttpServletRequest request) {
+                                                      HttpServletRequest request) {
         if (contestQuestionSubmitAddRequest == null || contestQuestionSubmitAddRequest.getContestQuestionId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        final User loginUser = userService.getLoginUser(request);
+        final User loginUser = userFeignClient.getLoginUser(request);
         long contestQuestionSubmitId = contestQuestionSubmitService.doContestQuestionSubmit(contestQuestionSubmitAddRequest, loginUser);
         return ResultUtils.success(contestQuestionSubmitId);
     }
@@ -62,13 +62,13 @@ public class ContestQuestionSubmitController {
      */
     @PostMapping("/list/page")
     public BaseResponse<Page<ContestQuestionSubmitVO>> listContestQuestionSubmitByPage(@RequestBody ContestQuestionSubmitQueryRequest contestQuestionSubmitQueryRequest,
-                                                                         HttpServletRequest request) {
+                                                                                       HttpServletRequest request) {
         long current = contestQuestionSubmitQueryRequest.getCurrent();
         long size = contestQuestionSubmitQueryRequest.getPageSize();
         // 从数据库中查询原始的题目提交分页信息
         Page<ContestQuestionSubmit> contestQuestionSubmitPage = contestQuestionSubmitService.page(new Page<>(current, size),
                 contestQuestionSubmitService.getQueryWrapper(contestQuestionSubmitQueryRequest));
-        final User loginUser = userService.getLoginUser(request);
+        final User loginUser = userFeignClient.getLoginUser(request);
         // 返回脱敏信息
         return ResultUtils.success(contestQuestionSubmitService.getContestQuestionSubmitVOPage(contestQuestionSubmitPage, loginUser));
     }
@@ -88,7 +88,7 @@ public class ContestQuestionSubmitController {
         if (contestQuestionSubmit == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        final User loginUser = userService.getLoginUser(request);
+        final User loginUser = userFeignClient.getLoginUser(request);
         return ResultUtils.success(contestQuestionSubmitService.getContestQuestionSubmitVO(contestQuestionSubmit, loginUser));
     }
     @PostMapping("/ranking")

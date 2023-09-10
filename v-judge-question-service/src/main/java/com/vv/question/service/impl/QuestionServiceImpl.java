@@ -3,19 +3,23 @@ package com.vv.question.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.constant.CommonConstant;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.exception.ThrowUtils;
-import com.vv.oj.mapper.*;
-import com.vv.oj.model.dto.question.QuestionQueryRequest;
-import com.vv.oj.model.entity.*;
-import com.vv.oj.model.vo.QuestionVO;
-import com.vv.oj.model.vo.QuestionVO;
-import com.vv.oj.model.vo.UserVO;
-import com.vv.oj.service.QuestionService;
-import com.vv.oj.service.UserService;
-import com.vv.oj.utils.SqlUtils;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.constant.CommonConstant;
+import com.vv.common.exception.BusinessException;
+import com.vv.common.exception.ThrowUtils;
+import com.vv.common.utils.SqlUtils;
+import com.vv.model.dto.question.QuestionQueryRequest;
+import com.vv.model.entity.Question;
+import com.vv.model.entity.QuestionFavour;
+import com.vv.model.entity.QuestionThumb;
+import com.vv.model.entity.User;
+import com.vv.model.vo.QuestionVO;
+import com.vv.model.vo.UserVO;
+import com.vv.question.mapper.QuestionFavourMapper;
+import com.vv.question.mapper.QuestionMapper;
+import com.vv.question.mapper.QuestionThumbMapper;
+import com.vv.question.service.QuestionService;
+import com.vv.service.UserFeignClient;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,15 +38,16 @@ import java.util.stream.Collectors;
 */
 @Service
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
-    implements QuestionService{
+    implements QuestionService {
 
     @Resource
     private QuestionThumbMapper questionThumbMapper;
 
     @Resource
     private QuestionFavourMapper questionFavourMapper;
+
     @Resource
-    private UserService userService;
+    private UserFeignClient userFeignClient;
 
     /**
      * 校验题目是否合法
@@ -128,11 +133,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         Long questionId = question.getId();
         User user = null;
         if (userId != null && userId > 0) {
-            user = userService.getById(userId);
+            user = userFeignClient.getById(userId);
         }
-        UserVO userVO = userService.getUserVO(user);
+        UserVO userVO = userFeignClient.getUserVO(user);
         questionVO.setUserVO(userVO);
-        User loginUser = userService.getLoginUserPermitNull(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         if (loginUser != null) {
             // 获取点赞
             QueryWrapper<QuestionThumb> questionThumbQueryWrapper = new QueryWrapper<>();
@@ -163,13 +168,13 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         
         // 1. 关联查询用户信息
         Set<Long> userIdSet = questionList.stream().map(Question::getUserId).collect(Collectors.toSet());
-        Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
+        Map<Long, List<User>> userIdUserListMap = userFeignClient.listByIds(userIdSet).stream()
                 .collect(Collectors.groupingBy(User::getId));
         
-        User loginUser = userService.getLoginUserPermitNull(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         if (loginUser != null) {
             Set<Long> questionIdSet = questionList.stream().map(Question::getId).collect(Collectors.toSet());
-            loginUser = userService.getLoginUser(request);
+            loginUser = userFeignClient.getLoginUser(request);
             // 获取点赞
             QueryWrapper<QuestionThumb> questionThumbQueryWrapper = new QueryWrapper<>();
             questionThumbQueryWrapper.in("questionId", questionIdSet);
@@ -191,7 +196,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
             if (userIdUserListMap.containsKey(userId)) {
                 user = userIdUserListMap.get(userId).get(0);
             }
-            questionVO.setUserVO(userService.getUserVO(user));
+            questionVO.setUserVO(userFeignClient.getUserVO(user));
             questionVO.setHasThumb(questionIdHasThumbMap.getOrDefault(question.getId(), false));
             questionVO.setHasFavour(questionIdHasFavourMap.getOrDefault(question.getId(), false));
             return questionVO;

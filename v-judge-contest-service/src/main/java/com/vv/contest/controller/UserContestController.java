@@ -1,23 +1,22 @@
 package com.vv.contest.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.gson.Gson;
-import com.vv.oj.annotation.AuthCheck;
-import com.vv.oj.common.BaseResponse;
-import com.vv.oj.common.DeleteRequest;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.common.ResultUtils;
-import com.vv.oj.constant.UserConstant;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.exception.ThrowUtils;
-import com.vv.oj.model.dto.usercontest.UserContestAddRequest;
-import com.vv.oj.model.dto.usercontest.UserContestQueryRequest;
-import com.vv.oj.model.dto.usercontest.UserContestUpdateRequest;
-import com.vv.oj.model.entity.UserContest;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.model.vo.UserContestVO;
-import com.vv.oj.service.UserContestService;
-import com.vv.oj.service.UserService;
+import com.vv.common.annotation.AuthCheck;
+import com.vv.common.common.BaseResponse;
+import com.vv.common.common.DeleteRequest;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.common.ResultUtils;
+import com.vv.common.constant.UserConstant;
+import com.vv.common.exception.BusinessException;
+import com.vv.common.exception.ThrowUtils;
+import com.vv.contest.service.UserContestService;
+import com.vv.model.dto.usercontest.UserContestAddRequest;
+import com.vv.model.dto.usercontest.UserContestQueryRequest;
+import com.vv.model.dto.usercontest.UserContestUpdateRequest;
+import com.vv.model.entity.User;
+import com.vv.model.entity.UserContest;
+import com.vv.model.vo.UserContestVO;
+import com.vv.service.UserFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +35,7 @@ public class UserContestController {
     private UserContestService userContestService;
 
     @Resource
-    private UserService userService;
+    private UserFeignClient userFeignClient;
 
 
     // region 增删改查
@@ -77,13 +76,13 @@ public class UserContestController {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User user = userService.getLoginUser(request);
+        User user = userFeignClient.getLoginUser(request);
         long id = deleteRequest.getId();
         // 判断是否存在
         UserContest oldUserContest = userContestService.getById(id);
         ThrowUtils.throwIf(oldUserContest == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可删除
-        if (!oldUserContest.getUserId().equals(user.getId()) && !userService.isAdmin(request)) {
+        if (!oldUserContest.getUserId().equals(user.getId()) && !userFeignClient.isAdmin(user)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         boolean b = userContestService.removeById(id);
@@ -164,7 +163,7 @@ public class UserContestController {
         if (userContestQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         userContestQueryRequest.setUserId(loginUser.getId());
         long current = userContestQueryRequest.getCurrent();
         long size = userContestQueryRequest.getPageSize();

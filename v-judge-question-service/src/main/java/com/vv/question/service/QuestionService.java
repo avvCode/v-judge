@@ -2,10 +2,11 @@ package com.vv.question.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.vv.oj.model.dto.question.QuestionQueryRequest;
-import com.vv.oj.model.entity.Question;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.vv.oj.model.vo.QuestionVO;
+import com.vv.model.dto.question.QuestionQueryRequest;
+import com.vv.model.entity.Question;
+import com.vv.model.vo.QuestionVO;
+
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -2,20 +2,20 @@ package com.vv.question.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
-import com.vv.oj.annotation.AuthCheck;
-import com.vv.oj.common.BaseResponse;
-import com.vv.oj.common.DeleteRequest;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.common.ResultUtils;
-import com.vv.oj.constant.UserConstant;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.exception.ThrowUtils;
-import com.vv.oj.model.dto.question.*;
-import com.vv.oj.model.entity.Question;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.model.vo.QuestionVO;
-import com.vv.oj.service.QuestionService;
-import com.vv.oj.service.UserService;
+import com.vv.common.annotation.AuthCheck;
+import com.vv.common.common.BaseResponse;
+import com.vv.common.common.DeleteRequest;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.common.ResultUtils;
+import com.vv.common.constant.UserConstant;
+import com.vv.common.exception.BusinessException;
+import com.vv.common.exception.ThrowUtils;
+import com.vv.model.dto.question.*;
+import com.vv.model.entity.Question;
+import com.vv.model.entity.User;
+import com.vv.model.vo.QuestionVO;
+import com.vv.question.service.QuestionService;
+import com.vv.service.UserFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +38,7 @@ public class QuestionController {
     private QuestionService questionService;
 
     @Resource
-    private UserService userService;
+    private UserFeignClient userFeignClient;
 
     private final static Gson GSON = new Gson();
 
@@ -70,7 +70,7 @@ public class QuestionController {
             question.setJudgeConfig(GSON.toJson(judgeConfig));
         }
         questionService.validQuestion(question, true);
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         question.setUserId(loginUser.getId());
         question.setFavourNum(0);
         question.setThumbNum(0);
@@ -92,13 +92,13 @@ public class QuestionController {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User user = userService.getLoginUser(request);
+        User user = userFeignClient.getLoginUser(request);
         long id = deleteRequest.getId();
         // 判断是否存在
         Question oldQuestion = questionService.getById(id);
         ThrowUtils.throwIf(oldQuestion == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可删除
-        if (!oldQuestion.getUserId().equals(user.getId()) && !userService.isAdmin(request)) {
+        if (!oldQuestion.getUserId().equals(user.getId()) && !userFeignClient.isAdmin(request)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         boolean b = questionService.removeById(id);
@@ -157,9 +157,9 @@ public class QuestionController {
         if (question == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         //不是本人或者管理源。不能直接获取所有信息
-        if(!question.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)){
+        if(!question.getUserId().equals(loginUser.getId()) && !userFeignClient.isAdmin(loginUser)){
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         return ResultUtils.success(questionService.getQuestionVO(question, request));
@@ -214,7 +214,7 @@ public class QuestionController {
         if (questionQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         questionQueryRequest.setUserId(loginUser.getId());
         long current = questionQueryRequest.getCurrent();
         long size = questionQueryRequest.getPageSize();
@@ -273,13 +273,13 @@ public class QuestionController {
         }
         // 参数校验
         questionService.validQuestion(question, false);
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         long id = questionEditRequest.getId();
         // 判断是否存在
         Question oldQuestion = questionService.getById(id);
         ThrowUtils.throwIf(oldQuestion == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可编辑
-        if (!oldQuestion.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
+        if (!oldQuestion.getUserId().equals(loginUser.getId()) && !userFeignClient.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         boolean result = questionService.updateById(question);

@@ -2,11 +2,11 @@ package com.vv.user.controller;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
-import com.vv.oj.common.BaseResponse;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.common.ResultUtils;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.utils.FileUtils;
+import com.vv.common.common.BaseResponse;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.common.ResultUtils;
+import com.vv.common.exception.BusinessException;
+import com.vv.common.utils.FileUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,35 +1,29 @@
 package com.vv.contest.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.gson.Gson;
-import com.vv.oj.annotation.AuthCheck;
-import com.vv.oj.common.BaseResponse;
-import com.vv.oj.common.DeleteRequest;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.common.ResultUtils;
-import com.vv.oj.constant.UserConstant;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.exception.ThrowUtils;
-import com.vv.oj.model.dto.contest.ContestAddRequest;
-import com.vv.oj.model.dto.contest.ContestEditRequest;
-import com.vv.oj.model.dto.contest.ContestQueryRequest;
-import com.vv.oj.model.dto.contest.ContestUpdateRequest;
-import com.vv.oj.model.entity.Contest;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.model.vo.ContestRankingVO;
-import com.vv.oj.model.vo.ContestVO;
-import com.vv.oj.service.ContestService;
-import com.vv.oj.service.UserService;
-import java.util.List;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import com.vv.common.annotation.AuthCheck;
+import com.vv.common.common.BaseResponse;
+import com.vv.common.common.DeleteRequest;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.common.ResultUtils;
+import com.vv.common.constant.UserConstant;
+import com.vv.common.exception.BusinessException;
+import com.vv.common.exception.ThrowUtils;
+import com.vv.contest.service.ContestService;
+import com.vv.model.dto.contest.ContestAddRequest;
+import com.vv.model.dto.contest.ContestEditRequest;
+import com.vv.model.dto.contest.ContestQueryRequest;
+import com.vv.model.dto.contest.ContestUpdateRequest;
+import com.vv.model.entity.Contest;
+import com.vv.model.entity.User;
+import com.vv.model.vo.ContestVO;
+import com.vv.service.UserFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 赛事接口
@@ -44,9 +38,7 @@ public class ContestController {
     @Resource
     private ContestService contestService;
 
-    @Resource
-    private UserService userService;
-    
+    private UserFeignClient userFeignClient;
 
     // region 增删改查
 
@@ -65,7 +57,7 @@ public class ContestController {
         Contest contest = new Contest();
         BeanUtils.copyProperties(contestAddRequest, contest);
         contestService.validContest(contest, true);
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         contest.setUserId(loginUser.getId());
         boolean result = contestService.save(contest);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
@@ -85,13 +77,13 @@ public class ContestController {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User user = userService.getLoginUser(request);
+        User user = userFeignClient.getLoginUser(request);
         long id = deleteRequest.getId();
         // 判断是否存在
         Contest oldContest = contestService.getById(id);
         ThrowUtils.throwIf(oldContest == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可删除
-        if (!oldContest.getUserId().equals(user.getId()) && !userService.isAdmin(request)) {
+        if (!oldContest.getUserId().equals(user.getId()) && !userFeignClient.isAdmin(user)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         boolean b = contestService.removeById(id);
@@ -172,7 +164,7 @@ public class ContestController {
         if (contestQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         contestQueryRequest.setUserId(loginUser.getId());
         long current = contestQueryRequest.getCurrent();
         long size = contestQueryRequest.getPageSize();
@@ -201,13 +193,13 @@ public class ContestController {
         BeanUtils.copyProperties(contestEditRequest, contest);
         // 参数校验
         contestService.validContest(contest, false);
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         long id = contestEditRequest.getId();
         // 判断是否存在
         Contest oldContest = contestService.getById(id);
         ThrowUtils.throwIf(oldContest == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可编辑
-        if (!oldContest.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
+        if (!oldContest.getUserId().equals(loginUser.getId()) && !userFeignClient.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         boolean result = contestService.updateById(contest);

@@ -2,13 +2,11 @@ package com.vv.contest.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.vv.oj.model.dto.contestquestion.ContestQuestionQueryRequest;
-import com.vv.oj.model.dto.question.QuestionQueryRequest;
-import com.vv.oj.model.entity.ContestQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.vv.oj.model.entity.Question;
-import com.vv.oj.model.vo.ContestQuestionVO;
-import com.vv.oj.model.vo.QuestionVO;
+import com.vv.model.dto.contestquestion.ContestQuestionQueryRequest;
+import com.vv.model.entity.ContestQuestion;
+import com.vv.model.vo.ContestQuestionVO;
+
 
 import javax.servlet.http.HttpServletRequest;
 

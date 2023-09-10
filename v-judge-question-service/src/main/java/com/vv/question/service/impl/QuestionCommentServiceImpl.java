@@ -1,9 +1,9 @@
 package com.vv.question.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.vv.oj.model.entity.QuestionComment;
-import com.vv.oj.service.QuestionCommentService;
-import com.vv.oj.mapper.QuestionCommentMapper;
+import com.vv.model.entity.QuestionComment;
+import com.vv.question.mapper.QuestionCommentMapper;
+import com.vv.question.service.QuestionCommentService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 */
 @Service
 public class QuestionCommentServiceImpl extends ServiceImpl<QuestionCommentMapper, QuestionComment>
-    implements QuestionCommentService{
+    implements QuestionCommentService {
 
 }
 

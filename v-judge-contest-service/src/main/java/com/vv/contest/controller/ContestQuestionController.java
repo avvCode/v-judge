@@ -4,25 +4,25 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
-import com.vv.oj.annotation.AuthCheck;
-import com.vv.oj.common.BaseResponse;
-import com.vv.oj.common.DeleteRequest;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.common.ResultUtils;
-import com.vv.oj.constant.UserConstant;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.exception.ThrowUtils;
-import com.vv.oj.model.dto.contestquestion.ContestQuestionAddRequest;
-import com.vv.oj.model.dto.contestquestion.ContestQuestionEditRequest;
-import com.vv.oj.model.dto.contestquestion.ContestQuestionQueryRequest;
-import com.vv.oj.model.dto.contestquestion.ContestQuestionUpdateRequest;
-import com.vv.oj.model.dto.question.JudgeCase;
-import com.vv.oj.model.dto.question.JudgeConfig;
-import com.vv.oj.model.entity.ContestQuestion;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.model.vo.ContestQuestionVO;
-import com.vv.oj.service.ContestQuestionService;
-import com.vv.oj.service.UserService;
+import com.vv.common.annotation.AuthCheck;
+import com.vv.common.common.BaseResponse;
+import com.vv.common.common.DeleteRequest;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.common.ResultUtils;
+import com.vv.common.constant.UserConstant;
+import com.vv.common.exception.BusinessException;
+import com.vv.common.exception.ThrowUtils;
+import com.vv.contest.service.ContestQuestionService;
+import com.vv.model.dto.contestquestion.ContestQuestionAddRequest;
+import com.vv.model.dto.contestquestion.ContestQuestionEditRequest;
+import com.vv.model.dto.contestquestion.ContestQuestionQueryRequest;
+import com.vv.model.dto.contestquestion.ContestQuestionUpdateRequest;
+import com.vv.model.dto.question.JudgeCase;
+import com.vv.model.dto.question.JudgeConfig;
+import com.vv.model.entity.ContestQuestion;
+import com.vv.model.entity.User;
+import com.vv.model.vo.ContestQuestionVO;
+import com.vv.service.UserFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +46,7 @@ public class ContestQuestionController {
     private ContestQuestionService contestQuestionService;
 
     @Resource
-    private UserService userService;
+    private UserFeignClient userFeignClient;
 
     private final static Gson GSON = new Gson();
 
@@ -82,7 +82,7 @@ public class ContestQuestionController {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         contestQuestionService.validContestQuestion(contestQuestion, true);
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         contestQuestion.setUserId(loginUser.getId());
         contestQuestion.setContestId(contestId);
         boolean result = contestQuestionService.save(contestQuestion);
@@ -103,13 +103,13 @@ public class ContestQuestionController {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User user = userService.getLoginUser(request);
+        User user = userFeignClient.getLoginUser(request);
         long id = deleteRequest.getId();
         // 判断是否存在
         ContestQuestion oldContestQuestion = contestQuestionService.getById(id);
         ThrowUtils.throwIf(oldContestQuestion == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可删除
-        if (!oldContestQuestion.getUserId().equals(user.getId()) && !userService.isAdmin(request)) {
+        if (!oldContestQuestion.getUserId().equals(user.getId()) && !userFeignClient.isAdmin(user)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         boolean b = contestQuestionService.removeById(id);
@@ -168,9 +168,9 @@ public class ContestQuestionController {
         if (contestQuestion == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         //不是本人或者管理源。不能直接获取所有信息
-        if(!contestQuestion.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)){
+        if(!contestQuestion.getUserId().equals(loginUser.getId()) && !userFeignClient.isAdmin(loginUser)){
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         return ResultUtils.success(contestQuestionService.getContestQuestionVO(contestQuestion, request));
@@ -225,7 +225,7 @@ public class ContestQuestionController {
         if (contestQuestionQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         contestQuestionQueryRequest.setUserId(loginUser.getId());
         long current = contestQuestionQueryRequest.getCurrent();
         long size = contestQuestionQueryRequest.getPageSize();
@@ -284,13 +284,13 @@ public class ContestQuestionController {
         }
         // 参数校验
         contestQuestionService.validContestQuestion(contestQuestion, false);
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         long id = contestQuestionEditRequest.getId();
         // 判断是否存在
         ContestQuestion oldContestQuestion = contestQuestionService.getById(id);
         ThrowUtils.throwIf(oldContestQuestion == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可编辑
-        if (!oldContestQuestion.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
+        if (!oldContestQuestion.getUserId().equals(loginUser.getId()) && !userFeignClient.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         boolean result = contestQuestionService.updateById(contestQuestion);

@@ -8,31 +8,30 @@ import cn.hutool.core.date.format.FastDateFormat;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.constant.CommonConstant;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.mapper.ContestMapper;
-import com.vv.oj.mapper.ContestQuestionMapper;
-import com.vv.oj.mapper.ContestQuestionSubmitMapper;
-import com.vv.oj.mapper.UserMapper;
-import com.vv.oj.model.dto.contestquestion.UserContestRanking;
-import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitAddRequest;
-import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitQueryRequest;
-import com.vv.oj.model.dto.contestquestionsubmit.ContestRankingQueryRequest;
-import com.vv.oj.model.entity.Contest;
-import com.vv.oj.model.entity.ContestQuestion;
-import com.vv.oj.model.entity.ContestQuestionSubmit;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.model.enums.ContestQuestionSubmitLanguageEnum;
-import com.vv.oj.model.enums.ContestQuestionSubmitStatusEnum;
-import com.vv.oj.model.vo.ContestQuestionSubmitVO;
-import com.vv.oj.model.vo.ContestQuestionVO;
-import com.vv.oj.model.vo.ContestRankingVO;
-import com.vv.oj.model.vo.UserVO;
-import com.vv.oj.service.ContestQuestionService;
-import com.vv.oj.service.ContestQuestionSubmitService;
-import com.vv.oj.service.UserService;
-import com.vv.oj.utils.SqlUtils;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.constant.CommonConstant;
+import com.vv.common.exception.BusinessException;
+import com.vv.common.utils.SqlUtils;
+import com.vv.contest.mapper.ContestMapper;
+import com.vv.contest.mapper.ContestQuestionMapper;
+import com.vv.contest.mapper.ContestQuestionSubmitMapper;
+import com.vv.contest.service.ContestQuestionService;
+import com.vv.contest.service.ContestQuestionSubmitService;
+import com.vv.model.dto.contestquestion.UserContestRanking;
+import com.vv.model.dto.contestquestionsubmit.ContestQuestionSubmitAddRequest;
+import com.vv.model.dto.contestquestionsubmit.ContestQuestionSubmitQueryRequest;
+import com.vv.model.dto.contestquestionsubmit.ContestRankingQueryRequest;
+import com.vv.model.entity.Contest;
+import com.vv.model.entity.ContestQuestion;
+import com.vv.model.entity.ContestQuestionSubmit;
+import com.vv.model.entity.User;
+import com.vv.model.enums.ContestQuestionSubmitLanguageEnum;
+import com.vv.model.enums.ContestQuestionSubmitStatusEnum;
+import com.vv.model.vo.ContestQuestionSubmitVO;
+import com.vv.model.vo.ContestQuestionVO;
+import com.vv.model.vo.ContestRankingVO;
+import com.vv.model.vo.UserVO;
+import com.vv.service.UserFeignClient;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -54,10 +53,8 @@ public class ContestQuestionSubmitServiceImpl extends ServiceImpl<ContestQuestio
     private ContestQuestionService contestQuestionService;
 
     @Resource
-    private UserService userService;
+    private UserFeignClient userFeignClient;
 
-    @Resource
-    private UserMapper userMapper;
 
     @Resource
     private ContestQuestionMapper contestQuestionMapper;
@@ -148,11 +145,11 @@ public class ContestQuestionSubmitServiceImpl extends ServiceImpl<ContestQuestio
         long userId = loginUser.getId();
         // 处理脱敏
         Long createUserId = contestQuestionSubmit.getUserId();
-        if (userId != createUserId && !userService.isAdmin(loginUser)) {
+        if (userId != createUserId && !userFeignClient.isAdmin(loginUser)) {
             contestQuestionSubmitVO.setCode(null);
         }
         //获取创建人VO
-        UserVO userVO = userService.getUserVOById(createUserId);
+        UserVO userVO = userFeignClient.getVOById(createUserId);
         contestQuestionSubmitVO.setUserVO(userVO);
         //获取题目VO
         ContestQuestion contestQuestion = contestQuestionService.getById(contestQuestionSubmit.getContestQuestionId());
@@ -267,7 +264,7 @@ public class ContestQuestionSubmitServiceImpl extends ServiceImpl<ContestQuestio
                 total += list.size();
                 map.put(contestQuestion.getDisplayId(), userContestRanking);
             }
-            User user = userMapper.selectById(userId);
+            User user = userFeignClient.getById(userId);
             contestRankingVO.setAcNum(totalAcNum);
             contestRankingVO.setTotal(total);
             contestRankingVO.setUserName(user.getUserName());

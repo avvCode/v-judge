@@ -3,24 +3,24 @@ package com.vv.question.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.constant.CommonConstant;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.model.dto.questionsubmit.QuestionSubmitAddRequest;
-import com.vv.oj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
-import com.vv.oj.model.entity.Question;
-import com.vv.oj.model.entity.QuestionSubmit;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.model.enums.QuestionSubmitLanguageEnum;
-import com.vv.oj.model.enums.QuestionSubmitStatusEnum;
-import com.vv.oj.model.vo.QuestionSubmitVO;
-import com.vv.oj.model.vo.QuestionVO;
-import com.vv.oj.model.vo.UserVO;
-import com.vv.oj.service.QuestionService;
-import com.vv.oj.service.QuestionSubmitService;
-import com.vv.oj.mapper.QuestionSubmitMapper;
-import com.vv.oj.service.UserService;
-import com.vv.oj.utils.SqlUtils;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.constant.CommonConstant;
+import com.vv.common.exception.BusinessException;
+import com.vv.common.utils.SqlUtils;
+import com.vv.model.dto.questionsubmit.QuestionSubmitAddRequest;
+import com.vv.model.dto.questionsubmit.QuestionSubmitQueryRequest;
+import com.vv.model.entity.Question;
+import com.vv.model.entity.QuestionSubmit;
+import com.vv.model.entity.User;
+import com.vv.model.enums.QuestionSubmitLanguageEnum;
+import com.vv.model.enums.QuestionSubmitStatusEnum;
+import com.vv.model.vo.QuestionSubmitVO;
+import com.vv.model.vo.QuestionVO;
+import com.vv.model.vo.UserVO;
+import com.vv.question.mapper.QuestionSubmitMapper;
+import com.vv.question.service.QuestionService;
+import com.vv.question.service.QuestionSubmitService;
+import com.vv.service.UserFeignClient;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,12 +37,12 @@ import java.util.stream.Collectors;
 */
 @Service
 public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper, QuestionSubmit>
-    implements QuestionSubmitService{
+    implements QuestionSubmitService {
     @Resource
     private QuestionService questionService;
 
     @Resource
-    private UserService userService;
+    private UserFeignClient userFeignClient;
 
     /**
      * 提交题目
@@ -121,11 +121,12 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         long userId = loginUser.getId();
         // 处理脱敏
         Long createUserId = questionSubmit.getUserId();
-        if (userId != createUserId && !userService.isAdmin(loginUser)) {
+        if (userId != createUserId && !userFeignClient.isAdmin(loginUser)) {
             questionSubmitVO.setCode(null);
         }
         //获取创建人VO
-        UserVO userVO = userService.getUserVOById(createUserId);
+        User user = userFeignClient.getById(createUserId);
+        UserVO userVO = userFeignClient.getUserVO(user);
         questionSubmitVO.setUserVO(userVO);
         //获取题目VO
         Question question = questionService.getById(questionSubmit.getQuestionId());

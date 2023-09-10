@@ -2,16 +2,14 @@ package com.vv.question.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.mapper.QuestionThumbMapper;
-import com.vv.oj.model.entity.Question;
-import com.vv.oj.model.entity.QuestionThumb;
-import com.vv.oj.model.entity.QuestionThumb;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.service.QuestionService;
-import com.vv.oj.service.QuestionThumbService;
-import com.vv.oj.service.QuestionThumbService;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.exception.BusinessException;
+import com.vv.model.entity.Question;
+import com.vv.model.entity.QuestionThumb;
+import com.vv.model.entity.User;
+import com.vv.question.mapper.QuestionThumbMapper;
+import com.vv.question.service.QuestionService;
+import com.vv.question.service.QuestionThumbService;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +23,7 @@ import javax.annotation.Resource;
 */
 @Service
 public class QuestionThumbServiceImpl extends ServiceImpl<QuestionThumbMapper, QuestionThumb>
-    implements QuestionThumbService{
+    implements QuestionThumbService {
     @Resource
     private QuestionService questionService;
 

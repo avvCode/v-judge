@@ -33,6 +33,14 @@ public interface UserFeignClient {
     User getById(@RequestParam("userId") long userId);
 
     /**
+     * 根据 id 获取用户
+     * @param userId
+     * @return
+     */
+    @GetMapping("/get/vo/id")
+    UserVO getVOById(@RequestParam("userId") long userId);
+
+    /**
      * 根据 id 获取用户列表
      * @param idList
      * @return

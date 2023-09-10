@@ -1,8 +1,9 @@
 package com.vv.question.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.vv.oj.model.entity.QuestionThumb;
-import com.vv.oj.model.entity.User;
+import com.vv.model.entity.QuestionThumb;
+import com.vv.model.entity.User;
+
 
 /**
 * @author zyz19

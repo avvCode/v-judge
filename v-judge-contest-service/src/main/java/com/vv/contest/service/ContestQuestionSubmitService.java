@@ -3,13 +3,14 @@ package com.vv.contest.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitAddRequest;
-import com.vv.oj.model.dto.contestquestionsubmit.ContestQuestionSubmitQueryRequest;
-import com.vv.oj.model.dto.contestquestionsubmit.ContestRankingQueryRequest;
-import com.vv.oj.model.entity.ContestQuestionSubmit;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.model.vo.ContestQuestionSubmitVO;
-import com.vv.oj.model.vo.ContestRankingVO;
+import com.vv.model.dto.contestquestionsubmit.ContestQuestionSubmitAddRequest;
+import com.vv.model.dto.contestquestionsubmit.ContestQuestionSubmitQueryRequest;
+import com.vv.model.dto.contestquestionsubmit.ContestRankingQueryRequest;
+import com.vv.model.entity.ContestQuestionSubmit;
+import com.vv.model.entity.User;
+import com.vv.model.vo.ContestQuestionSubmitVO;
+import com.vv.model.vo.ContestRankingVO;
+
 
 /**
  * @author zyz19

@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.vv.oj.model.entity.Question;
-import com.vv.oj.model.entity.QuestionFavour;
-import com.vv.oj.model.entity.User;
+import com.vv.model.entity.Question;
+import com.vv.model.entity.QuestionFavour;
+import com.vv.model.entity.User;
 
 /**
 * @author zyz19
@@ -32,7 +32,7 @@ public interface QuestionFavourService extends IService<QuestionFavour> {
      * @return
      */
     Page<Question> listFavourQuestionByPage(IPage<Question> page, Wrapper<Question> queryWrapper,
-                                    long favourUserId);
+                                            long favourUserId);
 
     /**
      * 題目收藏（内部服务）

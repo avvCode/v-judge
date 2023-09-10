@@ -1,7 +1,7 @@
 package com.vv.question.mapper;
 
-import com.vv.oj.model.entity.QuestionComment;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.vv.model.entity.QuestionComment;
 
 /**
 * @author zyz19

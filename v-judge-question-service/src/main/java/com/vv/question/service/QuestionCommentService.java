@@ -1,7 +1,8 @@
 package com.vv.question.service;
 
-import com.vv.oj.model.entity.QuestionComment;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.vv.model.entity.QuestionComment;
 
 /**
 * @author zyz19

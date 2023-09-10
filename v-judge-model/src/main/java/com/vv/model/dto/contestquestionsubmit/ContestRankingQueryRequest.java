@@ -1,8 +1,10 @@
 package com.vv.model.dto.contestquestionsubmit;
 
+
+import com.vv.common.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.data.domain.PageRequest;
+
 
 import java.io.Serializable;
 

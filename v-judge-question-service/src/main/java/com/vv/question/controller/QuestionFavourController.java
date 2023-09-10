@@ -1,20 +1,20 @@
 package com.vv.question.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.vv.oj.common.BaseResponse;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.common.ResultUtils;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.exception.ThrowUtils;
-import com.vv.oj.model.dto.question.QuestionQueryRequest;
-import com.vv.oj.model.dto.questionfavour.QuestionFavourAddRequest;
-import com.vv.oj.model.dto.questionfavour.QuestionFavourQueryRequest;
-import com.vv.oj.model.entity.Question;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.model.vo.QuestionVO;
-import com.vv.oj.service.QuestionFavourService;
-import com.vv.oj.service.QuestionService;
-import com.vv.oj.service.UserService;
+import com.vv.common.common.BaseResponse;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.common.ResultUtils;
+import com.vv.common.exception.BusinessException;
+import com.vv.common.exception.ThrowUtils;
+import com.vv.model.dto.question.QuestionQueryRequest;
+import com.vv.model.dto.questionfavour.QuestionFavourAddRequest;
+import com.vv.model.dto.questionfavour.QuestionFavourQueryRequest;
+import com.vv.model.entity.Question;
+import com.vv.model.entity.User;
+import com.vv.model.vo.QuestionVO;
+import com.vv.question.service.QuestionFavourService;
+import com.vv.question.service.QuestionService;
+import com.vv.service.UserFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +41,7 @@ public class QuestionFavourController {
     private QuestionService questionService;
 
     @Resource
-    private UserService userService;
+    private UserFeignClient userFeignClient;
 
     /**
      * 收藏 / 取消收藏
@@ -52,12 +52,12 @@ public class QuestionFavourController {
      */
     @PostMapping("/")
     public BaseResponse<Integer> doQuestionFavour(@RequestBody QuestionFavourAddRequest questionFavourAddRequest,
-            HttpServletRequest request) {
+                                                  HttpServletRequest request) {
         if (questionFavourAddRequest == null || questionFavourAddRequest.getQuestionId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // 登录才能操作
-        final User loginUser = userService.getLoginUser(request);
+        final User loginUser = userFeignClient.getLoginUser(request);
         long questionId = questionFavourAddRequest.getQuestionId();
         int result = questionFavourService.doQuestionFavour(questionId, loginUser);
         return ResultUtils.success(result);
@@ -71,11 +71,11 @@ public class QuestionFavourController {
      */
     @PostMapping("/my/list/page")
     public BaseResponse<Page<QuestionVO>> listMyFavourQuestionByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
-            HttpServletRequest request) {
+                                                                     HttpServletRequest request) {
         if (questionQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userFeignClient.getLoginUser(request);
         long current = questionQueryRequest.getCurrent();
         long size = questionQueryRequest.getPageSize();
         // 限制爬虫

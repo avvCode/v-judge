@@ -5,16 +5,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.mapper.QuestionFavourMapper;
-import com.vv.oj.model.entity.Question;
-import com.vv.oj.model.entity.QuestionFavour;
-import com.vv.oj.model.entity.QuestionFavour;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.service.QuestionFavourService;
-import com.vv.oj.service.QuestionService;
-import com.vv.oj.service.QuestionFavourService;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.exception.BusinessException;
+import com.vv.model.entity.Question;
+import com.vv.model.entity.QuestionFavour;
+import com.vv.model.entity.User;
+import com.vv.question.mapper.QuestionFavourMapper;
+import com.vv.question.service.QuestionFavourService;
+import com.vv.question.service.QuestionService;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +26,7 @@ import javax.annotation.Resource;
 */
 @Service
 public class QuestionFavourServiceImpl extends ServiceImpl<QuestionFavourMapper, QuestionFavour>
-    implements QuestionFavourService{
+    implements QuestionFavourService {
     @Resource
     private QuestionService questionService;
 

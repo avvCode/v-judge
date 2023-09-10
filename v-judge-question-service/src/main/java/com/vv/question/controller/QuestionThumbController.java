@@ -1,13 +1,13 @@
 package com.vv.question.controller;
 
-import com.vv.oj.common.BaseResponse;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.common.ResultUtils;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.model.dto.questionthumb.QuestionThumbAddRequest;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.service.QuestionThumbService;
-import com.vv.oj.service.UserService;
+import com.vv.common.common.BaseResponse;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.common.ResultUtils;
+import com.vv.common.exception.BusinessException;
+import com.vv.model.dto.questionthumb.QuestionThumbAddRequest;
+import com.vv.model.entity.User;
+import com.vv.question.service.QuestionThumbService;
+import com.vv.service.UserFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +31,7 @@ public class QuestionThumbController {
     private QuestionThumbService questionThumbService;
 
     @Resource
-    private UserService userService;
+    private UserFeignClient userFeignClient;
 
     /**
      * 点赞 / 取消点赞
@@ -42,12 +42,12 @@ public class QuestionThumbController {
      */
     @PostMapping("/")
     public BaseResponse<Integer> doThumb(@RequestBody QuestionThumbAddRequest questionThumbAddRequest,
-            HttpServletRequest request) {
+                                         HttpServletRequest request) {
         if (questionThumbAddRequest == null || questionThumbAddRequest.getQuestionId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // 登录才能点赞
-        final User loginUser = userService.getLoginUser(request);
+        final User loginUser = userFeignClient.getLoginUser(request);
         long questionId = questionThumbAddRequest.getQuestionId();
         int result = questionThumbService.doQuestionThumb(questionId, loginUser);
         return ResultUtils.success(result);

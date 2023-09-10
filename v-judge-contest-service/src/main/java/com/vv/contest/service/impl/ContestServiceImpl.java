@@ -6,23 +6,21 @@ import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.constant.CommonConstant;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.exception.ThrowUtils;
-import com.vv.oj.model.dto.contest.ContestQueryRequest;
-import com.vv.oj.model.entity.*;
-import com.vv.oj.model.enums.ContestRuleEnum;
-import com.vv.oj.model.enums.ContestTypeEnum;
-import com.vv.oj.model.vo.ContestQuestionSubmitVO;
-import com.vv.oj.model.vo.ContestRankingVO;
-import com.vv.oj.model.vo.ContestVO;
-import com.vv.oj.model.vo.UserVO;
-import com.vv.oj.service.ContestQuestionSubmitService;
-import com.vv.oj.service.ContestService;
-import com.vv.oj.mapper.ContestMapper;
-import com.vv.oj.service.UserService;
-import com.vv.oj.utils.SqlUtils;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.constant.CommonConstant;
+import com.vv.common.exception.BusinessException;
+import com.vv.common.exception.ThrowUtils;
+import com.vv.common.utils.SqlUtils;
+import com.vv.contest.mapper.ContestMapper;
+import com.vv.contest.service.ContestService;
+import com.vv.model.dto.contest.ContestQueryRequest;
+import com.vv.model.entity.Contest;
+import com.vv.model.entity.User;
+import com.vv.model.enums.ContestRuleEnum;
+import com.vv.model.enums.ContestTypeEnum;
+import com.vv.model.vo.ContestVO;
+import com.vv.model.vo.UserVO;
+import com.vv.service.UserFeignClient;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,9 +38,9 @@ import java.util.stream.Collectors;
 */
 @Service
 public class ContestServiceImpl extends ServiceImpl<ContestMapper, Contest>
-    implements ContestService{
+    implements ContestService {
     @Resource
-    private UserService userService;
+    private UserFeignClient userFeignClient;
     
     @Override
     public void validContest(Contest contest, boolean add) {
@@ -127,9 +125,9 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, Contest>
         Long userId = contest.getUserId();
         User user = null;
         if (userId != null && userId > 0) {
-            user = userService.getById(userId);
+            user = userFeignClient.getById(userId);
         }
-        UserVO userVO = userService.getUserVO(user);
+        UserVO userVO = userFeignClient.getUserVO(user);
         contestVO.setUserVO(userVO);
         return contestVO;
     }
@@ -143,7 +141,7 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, Contest>
         }
         // 1. 关联查询用户信息
         Set<Long> userIdSet = contestList.stream().map(Contest::getUserId).collect(Collectors.toSet());
-        Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
+        Map<Long, List<User>> userIdUserListMap = userFeignClient.listByIds(userIdSet).stream()
                 .collect(Collectors.groupingBy(User::getId));
 
         // 填充信息
@@ -156,7 +154,7 @@ public class ContestServiceImpl extends ServiceImpl<ContestMapper, Contest>
                     if (userIdUserListMap.containsKey(userId)) {
                         user = userIdUserListMap.get(userId).get(0);
                     }
-                    contestVO.setUserVO(userService.getUserVO(user));
+                    contestVO.setUserVO(userFeignClient.getUserVO(user));
                     return contestVO;
                 })
                 .collect(Collectors.toList());

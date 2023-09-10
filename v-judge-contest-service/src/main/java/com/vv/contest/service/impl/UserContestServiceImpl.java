@@ -3,21 +3,21 @@ package com.vv.contest.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.vv.oj.common.ErrorCode;
-import com.vv.oj.constant.CommonConstant;
-import com.vv.oj.exception.BusinessException;
-import com.vv.oj.mapper.UserContestMapper;
-import com.vv.oj.model.dto.usercontest.UserContestQueryRequest;
-import com.vv.oj.model.entity.Contest;
-import com.vv.oj.model.entity.User;
-import com.vv.oj.model.entity.UserContest;
-import com.vv.oj.model.vo.ContestVO;
-import com.vv.oj.model.vo.UserContestVO;
-import com.vv.oj.model.vo.UserVO;
-import com.vv.oj.service.ContestService;
-import com.vv.oj.service.UserContestService;
-import com.vv.oj.service.UserService;
-import com.vv.oj.utils.SqlUtils;
+import com.vv.common.common.ErrorCode;
+import com.vv.common.constant.CommonConstant;
+import com.vv.common.exception.BusinessException;
+import com.vv.common.utils.SqlUtils;
+import com.vv.contest.mapper.UserContestMapper;
+import com.vv.contest.service.ContestService;
+import com.vv.contest.service.UserContestService;
+import com.vv.model.dto.usercontest.UserContestQueryRequest;
+import com.vv.model.entity.Contest;
+import com.vv.model.entity.User;
+import com.vv.model.entity.UserContest;
+import com.vv.model.vo.ContestVO;
+import com.vv.model.vo.UserContestVO;
+import com.vv.model.vo.UserVO;
+import com.vv.service.UserFeignClient;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 public class UserContestServiceImpl extends ServiceImpl<UserContestMapper, UserContest>
         implements UserContestService {
     @Resource
-    private UserService userService;
+    private UserFeignClient userFeignClient;
 
     @Resource
     private ContestService contestService;
@@ -97,8 +97,8 @@ public class UserContestServiceImpl extends ServiceImpl<UserContestMapper, UserC
         User user = null;
         Contest contest = null;
         if (userId != null && userId > 0) {
-            user = userService.getById(userId);
-            UserVO userVO = userService.getUserVO(user);
+            user = userFeignClient.getById(userId);
+            UserVO userVO = userFeignClient.getUserVO(user);
             userContestVO.setUserVO(userVO);
         }
         if (contestId!= null && contestId > 0) {
@@ -125,8 +125,8 @@ public class UserContestServiceImpl extends ServiceImpl<UserContestMapper, UserC
             User user = null;
             Contest contest = null;
             if (userId != null && userId > 0) {
-                user = userService.getById(userId);
-                UserVO userVO = userService.getUserVO(user);
+                user = userFeignClient.getById(userId);
+                UserVO userVO = userFeignClient.getUserVO(user);
                 userContestVO.setUserVO(userVO);
             }
             if (contestId!= null && contestId > 0) {
