@@ -3,7 +3,7 @@ package com.vv.model.dto.contest;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.vv.oj.common.PageRequest;
+import com.vv.common.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

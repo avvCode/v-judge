@@ -3,10 +3,11 @@ package com.vv.model.dto.usercontest;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.vv.oj.common.PageRequest;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
+import com.vv.common.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

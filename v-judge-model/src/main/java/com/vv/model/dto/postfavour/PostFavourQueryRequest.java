@@ -1,8 +1,9 @@
 package com.vv.model.dto.postfavour;
 
-import com.vv.oj.common.PageRequest;
-import com.vv.oj.model.dto.post.PostQueryRequest;
 import java.io.Serializable;
+
+import com.vv.common.common.PageRequest;
+import com.vv.model.dto.post.PostQueryRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

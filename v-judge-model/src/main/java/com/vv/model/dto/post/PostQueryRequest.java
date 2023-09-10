@@ -3,7 +3,7 @@ package com.vv.model.dto.post;
 import java.io.Serializable;
 import java.util.List;
 
-import com.vv.oj.common.PageRequest;
+import com.vv.common.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

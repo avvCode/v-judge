@@ -1,7 +1,6 @@
 package com.vv.model.dto.questionfavour;
-
-import com.vv.oj.common.PageRequest;
-import com.vv.oj.model.dto.question.QuestionQueryRequest;
+import com.vv.common.common.PageRequest;
+import com.vv.model.dto.question.QuestionQueryRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

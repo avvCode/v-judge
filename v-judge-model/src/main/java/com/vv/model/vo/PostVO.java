@@ -2,10 +2,11 @@ package com.vv.model.vo;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.vv.oj.model.entity.Post;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
+import com.vv.model.entity.Post;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 

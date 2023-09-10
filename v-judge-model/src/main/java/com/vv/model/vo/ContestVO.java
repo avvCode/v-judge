@@ -1,6 +1,7 @@
 package com.vv.model.vo;
 
-import com.vv.oj.model.entity.Contest;
+
+import com.vv.model.entity.Contest;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 

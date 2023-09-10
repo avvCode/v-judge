@@ -1,7 +1,6 @@
 package com.vv.model.dto.contestquestion;
-
-import com.vv.oj.model.dto.question.JudgeCase;
-import com.vv.oj.model.dto.question.JudgeConfig;
+import com.vv.model.dto.question.JudgeCase;
+import com.vv.model.dto.question.JudgeConfig;
 import lombok.Data;
 
 import java.io.Serializable;

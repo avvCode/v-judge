@@ -1,8 +1,7 @@
 package com.vv.model.vo;
 
-import com.vv.oj.model.dto.contestquestion.UserContestRanking;
-import com.vv.oj.model.entity.ContestQuestionSubmit;
-import com.vv.oj.model.entity.QuestionSubmit;
+
+import com.vv.model.dto.contestquestion.UserContestRanking;
 import lombok.Data;
 
 import java.util.HashMap;

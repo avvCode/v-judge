@@ -1,8 +1,8 @@
 package com.vv.model.vo;
 
 import cn.hutool.json.JSONUtil;
-import com.vv.oj.model.dto.question.JudgeConfig;
-import com.vv.oj.model.entity.ContestQuestion;
+import com.vv.model.dto.question.JudgeConfig;
+import com.vv.model.entity.ContestQuestion;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 

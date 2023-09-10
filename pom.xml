@@ -14,7 +14,9 @@
         <module>v-judge-question-service</module>
         <module>v-judge-contest-service</module>
         <module>v-judge-user-service</module>
-        <module>v-judge-gateway</module>
+        <module>v-judge-gateway-service</module>
+        <module>v-judge-service-client</module>
+        <module>v-judge-judge-service</module>
     </modules>
     <properties>
         <java.version>1.8</java.version>

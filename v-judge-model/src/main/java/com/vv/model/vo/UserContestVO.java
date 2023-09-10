@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.vv.oj.model.entity.UserContest;
+import com.vv.model.entity.UserContest;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
