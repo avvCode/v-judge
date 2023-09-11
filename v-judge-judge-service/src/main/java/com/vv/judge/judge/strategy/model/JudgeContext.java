@@ -1,4 +1,4 @@
-package com.vv.judge.judge.strategy;
+package com.vv.judge.judge.strategy.model;
 
 import com.vv.model.codesandbox.JudgeInfo;
 import com.vv.model.dto.question.JudgeCase;

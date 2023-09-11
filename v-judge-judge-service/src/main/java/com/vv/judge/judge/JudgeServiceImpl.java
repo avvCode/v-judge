@@ -6,7 +6,7 @@ import com.vv.common.exception.BusinessException;
 import com.vv.judge.judge.codesandbox.CodeSandbox;
 import com.vv.judge.judge.codesandbox.CodeSandboxFactory;
 import com.vv.judge.judge.codesandbox.CodeSandboxProxy;
-import com.vv.judge.judge.strategy.JudgeContext;
+import com.vv.judge.judge.strategy.model.JudgeContext;
 import com.vv.model.codesandbox.ExecuteCodeRequest;
 import com.vv.model.codesandbox.ExecuteCodeResponse;
 import com.vv.model.codesandbox.JudgeInfo;

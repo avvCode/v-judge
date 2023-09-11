@@ -27,7 +27,7 @@ Spring Cloud Gateway + Rabbit MQ
 Redis + MySQL
 
 ### 项目架构图
-
+<img src="doc/img.png">
 ### 核心模块划分
 
 v-judge-common 公共常量类模块
@@ -64,5 +64,7 @@ v-judge-question-service 题目服务 9002
 v-judge-contest-service 比赛服务（包括比赛、赛题）9003
 
 v-judge-judge-service 判题服务 9004
+
+v-judge-codesandbox 代码沙箱 9005（负责执行代码，给出执行时间、内存、输出用例）
 
 ### 已实现功能

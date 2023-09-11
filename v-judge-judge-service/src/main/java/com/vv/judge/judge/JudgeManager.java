@@ -1,8 +1,8 @@
 package com.vv.judge.judge;
 
-import com.vv.judge.judge.strategy.DefaultJudgeStrategy;
-import com.vv.judge.judge.strategy.JavaLanguageJudgeStrategy;
-import com.vv.judge.judge.strategy.JudgeContext;
+import com.vv.judge.judge.strategy.impl.DefaultJudgeStrategy;
+import com.vv.judge.judge.strategy.impl.JavaLanguageJudgeStrategy;
+import com.vv.judge.judge.strategy.model.JudgeContext;
 import com.vv.judge.judge.strategy.JudgeStrategy;
 import com.vv.model.codesandbox.JudgeInfo;
 import com.vv.model.entity.QuestionSubmit;

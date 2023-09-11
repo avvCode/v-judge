@@ -75,8 +75,9 @@ create table if not exists question_submit
 (
     id         bigint auto_increment comment 'id' primary key,
     language   varchar(128)                       not null comment '编程语言',
-    judgeInfo  text                               null comment '判断信息（json对象）',
-    status     int      default 0                 not null comment '判题状态',
+    judgeInfo  text                               null comment '判断信息（json对象）包含时间、内存、信息',
+    status     int      default 0                 not null comment '判题状态 0 - 待判题、1 - 判题中、2 - 成功、3 - 失败 ',
+    result     int      default 6                 not null comment '判题结果 0-10',
     questionId bigint                             not null comment '题目id',
     userId     bigint                             not null comment '创建用户 id',
     code       text                               not null comment '用户代码',

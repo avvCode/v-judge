@@ -16,6 +16,6 @@ public enum QuestionRateEnum {
         this.description = description;
     }
 
-    int code;
-    String description;
+    final int code;
+    final String description;
 }
