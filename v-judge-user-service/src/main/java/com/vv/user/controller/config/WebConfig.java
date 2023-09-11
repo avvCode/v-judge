@@ -1,4 +1,4 @@
-package com.vv.common.config;
+package com.vv.user.controller.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;

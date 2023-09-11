@@ -85,6 +85,9 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "数据插入失败");
         }
         Long questionSubmitId = questionSubmit.getId();
+        //题目提交数加一
+        question.setSubmitNum(question.getSubmitNum() + 1);
+        questionService.updateById(question);
         // 发送消息到消息队列
         myMessageProducer.sendMessage("judge_exchange",
                 "question",

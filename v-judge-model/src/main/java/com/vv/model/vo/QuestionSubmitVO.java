@@ -39,6 +39,11 @@ public class QuestionSubmitVO {
     private Integer status;
 
     /**
+     * 判题结果 0-10
+     */
+    private Integer result;
+
+    /**
      * 题目 id
      */
     private Long questionId;

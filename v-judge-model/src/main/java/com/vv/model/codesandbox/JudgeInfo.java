@@ -10,7 +10,7 @@ public class JudgeInfo {
     /**
      * 程序执行信息
      */
-    private String message;
+    private Integer code;
 
     /**
      * 消耗内存（KB）

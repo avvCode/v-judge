@@ -30,7 +30,9 @@ Spring Cloud Gateway + Rabbit MQ
 Redis + MySQL
 
 ### 项目架构图
-<img src="doc/img.png">
+
+<img src="doc/img.png" alt="">
+
 ### 核心模块划分
 
 v-judge-common 公共常量类模块

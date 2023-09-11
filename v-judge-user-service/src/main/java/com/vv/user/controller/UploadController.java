@@ -27,6 +27,9 @@ public class UploadController {
         try {
             String fileName = UUID.randomUUID() + ".png";
             String resourcePath = FileUtils.getResourcePath(FILE_DIR_NAME);
+            if(!FileUtil.exist(resourcePath)){
+                FileUtil.mkdir(resourcePath);
+            }
             file.transferTo(new File(  resourcePath + File.separator + fileName));
             return ResultUtils.success(fileName);
         } catch (IOException e) {
@@ -35,7 +38,6 @@ public class UploadController {
     }
     @PostMapping("/userAvatar/del")
     public BaseResponse<Boolean> delUserAvatar(String oldPath){
-        // 设置上传至项目文件夹下的uploadFile文件夹中，没有文件夹则创建
         try {
             String resourcePath = FileUtils.getResourcePath(FILE_DIR_NAME);
             boolean del = FileUtil.del(resourcePath + File.separator + oldPath);

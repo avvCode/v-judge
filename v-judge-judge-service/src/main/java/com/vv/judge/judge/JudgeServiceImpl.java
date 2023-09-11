@@ -13,6 +13,7 @@ import com.vv.model.codesandbox.JudgeInfo;
 import com.vv.model.dto.question.JudgeCase;
 import com.vv.model.entity.Question;
 import com.vv.model.entity.QuestionSubmit;
+import com.vv.model.enums.JudgeInfoMessageEnum;
 import com.vv.model.enums.QuestionSubmitStatusEnum;
 import com.vv.service.QuestionFeignClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,7 +90,13 @@ public class JudgeServiceImpl implements JudgeService {
         questionSubmitUpdate.setId(questionSubmitId);
         questionSubmitUpdate.setStatus(QuestionSubmitStatusEnum.SUCCEED.getValue());
         questionSubmitUpdate.setJudgeInfo(JSONUtil.toJsonStr(judgeInfo));
+        questionSubmitUpdate.setResult(judgeInfo.getCode());
         update = questionFeignClient.updateQuestionSubmitById(questionSubmitUpdate);
+        if(judgeInfo.getCode().equals(JudgeInfoMessageEnum.ACCEPTED.getCode())){
+            question.setAcceptedNum(question.getAcceptedNum() + 1);
+            questionFeignClient.updateQuestionById(question);
+        }
+
         if (!update) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "题目状态更新错误");
         }
