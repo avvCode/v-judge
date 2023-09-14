@@ -31,7 +31,7 @@ Redis + MySQL
 
 ### 项目架构图
 
-<img src="doc/img.png" alt="">
+<img src="doc/架构图.png" alt="">
 
 ### 核心模块划分
 
@@ -73,3 +73,39 @@ v-judge-judge-service 判题服务 9004
 v-judge-codesandbox 代码沙箱 9005（负责执行代码，给出执行时间、内存、输出用例）
 
 ### 已实现功能
+
+部分截图
+
+<img src="doc/题目列表.png">
+
+做题页面
+
+<img src="doc/做题.png">
+
+提交列表
+
+<img src="doc/提交记录.png">
+
+创建题目
+
+<img src="doc/创建题目.png">
+
+个人中心
+
+<img src="doc/个人中心.png">
+
+用户管理
+
+<img src="doc/用户管理.png">
+
+比赛中心
+
+<img src="doc/赛题列表.png">
+
+<img src="doc/赛题提交列表.png">
+
+<img src="doc/提交时间列表.png">
+
+<img src="doc/创建比赛.png">
+
+<img src="doc/编辑比赛.png">
