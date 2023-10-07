@@ -1,5 +1,6 @@
 package com.vv.judge.judge;
 
+import com.vv.judge.judge.strategy.impl.CppLanguageJudgeStrategy;
 import com.vv.judge.judge.strategy.impl.DefaultJudgeStrategy;
 import com.vv.judge.judge.strategy.impl.JavaLanguageJudgeStrategy;
 import com.vv.judge.judge.strategy.model.JudgeContext;
@@ -26,6 +27,8 @@ public class JudgeManager {
         JudgeStrategy judgeStrategy = new DefaultJudgeStrategy();
         if ("java".equals(language)) {
             judgeStrategy = new JavaLanguageJudgeStrategy();
+        } else if ("cpp".equals(language)) {
+            judgeStrategy = new CppLanguageJudgeStrategy();
         }
         return judgeStrategy.doJudge(judgeContext);
     }

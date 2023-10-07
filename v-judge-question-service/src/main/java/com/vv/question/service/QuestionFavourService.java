@@ -28,7 +28,7 @@ public interface QuestionFavourService extends IService<QuestionFavour> {
      *
      * @param page
      * @param queryWrapper
-     * @param favourUserId
+     * @param favourUserId、
      * @return
      */
     Page<Question> listFavourQuestionByPage(IPage<Question> page, Wrapper<Question> queryWrapper,
