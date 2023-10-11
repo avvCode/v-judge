@@ -6,11 +6,13 @@
 submit提交记录等。
 
 - 支持ACM模式
+- 支持本地C、C++、Java判题（安全性、内存管理困难）
+- 支持docker的Java判题
 
 后续计划：
 - 调整Ranking排名的表格样式。
-- 支持C++判题
-- ...
+- 支持go判题
+- ……
 
 ### 技术栈
 前端：
@@ -29,7 +31,7 @@ Spring Cloud Gateway + Rabbit MQ
 
 数据库：
 
-Redis + MySQL
+MySQL
 
 ### 项目架构
 
